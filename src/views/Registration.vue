@@ -127,11 +127,11 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .bg-vegetables {
   position: absolute;
   background: url("../assets/img/veggies.jpg");
   background-size: 10%;
-  opacity: 0.1;
+  opacity: 0.2;
 }
 </style>

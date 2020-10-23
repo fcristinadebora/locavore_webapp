@@ -62,6 +62,6 @@ export default {};
   position: absolute;
   background: url("../assets/img/veggies.jpg");
   background-size: 8%;
-  opacity: 0.15;
+  opacity: 0.2;
 }
 </style>
