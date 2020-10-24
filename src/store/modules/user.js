@@ -8,15 +8,11 @@ export default {
   },
 
   actions: {
-    async register (state, { data }) {
-      try {
-        const response = await api.post('registration', data)
-
-        console.log('registration', response)
-      } catch (error) {
-        
-        throw new Error(error)
-      }
+    register (state, { data }) {
+      return api.post('register', data)
+    },
+    login (state, { data }) {
+      return api.post('login', data)
     }
   }
 }

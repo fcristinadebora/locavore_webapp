@@ -13,3 +13,10 @@ min-height: 100%;
 body{
     color: #495057;
 }
+
+.bg-vegetables {
+    position: absolute;
+    background: url("~@/assets/img/veggies.jpg");
+    background-size: 8%;
+    opacity: 0.2;
+  }

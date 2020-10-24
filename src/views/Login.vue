@@ -8,44 +8,56 @@
           <h4 class="mb-4">Bem-vindo(a) ao Locavore!</h4>
 
           <div class="card border-success">
-            <div class="card-header text-white bg-success ">
-              Acesse sua conta
-            </div>
-            <div class="card-body">
-              <form action="">
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group">
-                      <input
-                        type="email"
-                        class="form-control"
-                        placeholder="E-mail"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <input
-                        type="password"
-                        class="form-control"
-                        placeholder="Senha"
-                      />
+            <form @submit.prevent="login">
+              <div class="card-header text-white bg-success">
+                Acesse sua conta
+              </div>
+              <div class="card-body">
+                <form action="">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <input
+                          type="email"
+                          class="form-control"
+                          placeholder="E-mail"
+                          v-model="form.email"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <input
+                          type="password"
+                          class="form-control"
+                          placeholder="Senha"
+                          v-model="form.password"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
-            <div class="card-footer">
-              <div class="row align-items-center">
-                <div class="col-sm-6 text-left">
-                  <router-link to="/cadastro"
-                    >Ainda não sou cadastrado</router-link
-                  >
-                </div>
+                </form>
+              </div>
+              <div class="card-footer">
+                <div class="row align-items-center">
+                  <div class="col-sm-6 text-left">
+                    <router-link to="/cadastro"
+                      >Ainda não sou cadastrado</router-link
+                    >
+                  </div>
 
-                <div class="col-sm-6 text-right">
-                  <button class="btn btn-success">Entrar</button>
+                  <div class="col-sm-6 text-right">
+                    <button
+                      class="btn btn-success"
+                      type="submit"
+                      :disabled="loading"
+                    >
+                      Entrar
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -54,14 +66,60 @@
 </template>
 
 <script>
-export default {};
-</script>
+export default {
+  data() {
+    return {
+      loading: false,
+      form: {},
+      errors: {},
+    };
+  },
 
-<style lang="scss">
-.bg-vegetables {
-  position: absolute;
-  background: url("../assets/img/veggies.jpg");
-  background-size: 8%;
-  opacity: 0.2;
-}
-</style>
+  mounted() {},
+
+  methods: {
+    resetForm() {
+      this.form = {
+        email: "",
+        password: "",
+      };
+    },
+
+    login() {
+      this.errors = {};
+
+      this.loading = true;
+      this.$store
+        .dispatch("user/login", { data: this.form })
+        .then((response) => {
+          if (response.data.token) {
+            localStorage.setItem("authToken", response.data.token);
+          }
+
+          this.$router.push("/");
+        })
+        .catch((error) => {
+          if (error.response.data && error.response.data.message) {
+            this.$swal.fire({
+              title: "Oops!",
+              text: error.response.data.message,
+              icon: "error",
+            });
+
+            return false;
+          }
+
+          this.$swal.fire({
+            title: "Oops!",
+            text: "Ocorreu um erro. Por favor, tente novamente.",
+            icon: "error",
+          });
+          return false;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+  },
+};
+</script>

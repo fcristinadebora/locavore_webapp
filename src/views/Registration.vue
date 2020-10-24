@@ -9,9 +9,7 @@
 
           <form @submit.prevent="register()">
             <div class="card border-success">
-              <div class="card-header text-white bg-success">
-                Cadastre-se
-              </div>
+              <div class="card-header text-white bg-success">Cadastre-se</div>
               <div class="card-body text-left">
                 <div class="row">
                   <div class="col-12">
@@ -50,7 +48,9 @@
                         placeholder="Confirmar senha"
                         required
                       />
-                      <span class="text-danger" v-if="errors.confirm">A senha e a confirmação devem ser iguais!</span>
+                      <span class="text-danger" v-if="errors.confirm"
+                        >A senha e a confirmação devem ser iguais!</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -86,7 +86,7 @@ export default {
     return {
       loading: false,
       form: {},
-      errors: {}
+      errors: {},
     };
   },
 
@@ -103,35 +103,49 @@ export default {
     },
 
     register() {
-      this.errors = {}
+      this.errors = {};
 
-      if(this.form.password !== this.form.confirm){
-        this.errors.confirm = true
-        return false
+      if (this.form.password !== this.form.confirm) {
+        this.errors.confirm = true;
+        return false;
       }
 
-      this.loading = true
-      this.$store.dispatch("user/register", { data: this.form })
-        .catch(() => {
+      this.loading = true;
+      this.$store
+        .dispatch("user/register", { data: this.form })
+        .then(response => {
+          if(response.data.token){
+            localStorage.setItem('authToken', response.data.token);
+          }
+
+          this.$router.push('/')
+        })
+        .catch((error) => {
+          if (
+            error.response.data &&
+            error.response.data.email &&
+            error.response.data.email[0] == "The email has already been taken."
+          ) {
+            this.$swal.fire({
+              title: "Oops!",
+              text: "O endereço de e-mail informado já está em uso!",
+              icon: "error",
+            });
+
+            return false;
+          }
+
           this.$swal.fire({
-            title: 'Oops!',
-            text: 'Ocorreu um erro. Por favor, tente novamente.',
-            icon: 'error'
-          })
+            title: "Oops!",
+            text: "Ocorreu um erro. Por favor, tente novamente.",
+            icon: "error",
+          });
+          return false;
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.bg-vegetables {
-  position: absolute;
-  background: url("../assets/img/veggies.jpg");
-  background-size: 10%;
-  opacity: 0.2;
-}
-</style>
