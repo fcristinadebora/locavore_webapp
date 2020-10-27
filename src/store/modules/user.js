@@ -4,7 +4,11 @@ export default {
   namespaced: true,
 
   state: {
-    filial: null
+    user: null
+  },
+
+  getters: {
+    user: (state) => state.user
   },
 
   actions: {
@@ -13,6 +17,23 @@ export default {
     },
     login (state, { data }) {
       return api.post('login', data)
+    },
+    async authenticated ({commit}) {
+      try {
+        const response = await api.get('authenticated')
+        
+        commit('setUser', response.data.user)
+        return response
+      } catch (error) {
+        commit('setUser', false)
+        throw new Error(error)
+      }
+    }
+  },
+
+  mutations: {
+    setUser (state, item) {
+      state.user = item
     }
   }
 }

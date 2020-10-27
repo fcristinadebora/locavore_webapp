@@ -5,16 +5,17 @@ const getApiUrl = () => {
 }
 
 const getLocalStorageToken = () => {
+  console.log('kkkk',localStorage.getItem('authToken'))
   if (!localStorage.getItem('authToken')) {
     return null
   }
 
-  const localStorageFilial = localStorage.getItem('authToken')
-  if (!localStorageFilial.token) {
+  const token = localStorage.getItem('authToken')
+  if (!token) {
     return null
   }
 
-  return localStorageFilial.token
+  return token
 }
 
 const client = axios.create({
@@ -25,12 +26,10 @@ const client = axios.create({
   }
 })
 
-const setToken = (client) => {
-  client.defaults.headers.common.Token = getLocalStorageToken()
+client.interceptors.request.use((config) => {
+  config.headers.Token = getLocalStorageToken()
 
-  return client
-}
+  return config
+})
 
 export default client
-
-export { setToken }

@@ -1,75 +1,88 @@
-<template lang="">
-    <div class="h-100">
-         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-  <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
-  <nav class="my-2 my-md-0 mr-md-3">
-    <a class="p-2 text-dark" href="#">Features</a>
-    <a class="p-2 text-dark" href="#">Enterprise</a>
-    <a class="p-2 text-dark" href="#">Support</a>
-  </nav>
-  <router-link class="btn btn-outline-primary mr-2" to="/login">Login</router-link>
-  <router-link class="btn btn-primary" to="/cadastro">Cadastro</router-link>
-</div>
+<template>
+  <page>
+    <span slot="content">
+      <span class="btn btn-block bg-gradient text-white mb-3 font-weight-bold">Bem-vindo(a) ao Locavore!</span>
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <h1 class="display-4">Pricing</h1>
-  <p class="lead">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization.</p>
-</div>
+      <b-card no-body v-if="user">
+        <b-tabs pills card fill active-nav-item-class="bg-gradient">
+          <b-tab title="Produtores Favoritos" active>
+            <b-card-text
+              >Você ainda não favoritou nenhum produtor. Busque e favorite seus
+              produtores favoritos para vê-los em sua tela inicial</b-card-text
+            >
+          </b-tab>
+          <b-tab title="Interesses">
+            <b-card-text
+              >Você ainda não informou nenhum interesse.
+              <a href="">Clique aqui</a> para gerenciar seus interesses e ver
+              resultados compatíveis em sua tela inicial</b-card-text
+            >
+          </b-tab>
+        </b-tabs>
+      </b-card>
 
-<div class="container">
-  <div class="card-deck mb-3 text-center">
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">Free</h4>
-      </div>
-      <div class="card-body">
-        <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>10 users included</li>
-          <li>2 GB of storage</li>
-          <li>Email support</li>
-          <li>Help center access</li>
-        </ul>
-        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>
-      </div>
-    </div>
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">Pro</h4>
-      </div>
-      <div class="card-body">
-        <h1 class="card-title pricing-card-title">$15 <small class="text-muted">/ mo</small></h1>
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>20 users included</li>
-          <li>10 GB of storage</li>
-          <li>Priority email support</li>
-          <li>Help center access</li>
-        </ul>
-        <button type="button" class="btn btn-lg btn-block btn-primary">Get started</button>
-      </div>
-    </div>
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal">Enterprise</h4>
-      </div>
-      <div class="card-body">
-        <h1 class="card-title pricing-card-title">$29 <small class="text-muted">/ mo</small></h1>
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>30 users included</li>
-          <li>15 GB of storage</li>
-          <li>Phone and email support</li>
-          <li>Help center access</li>
-        </ul>
-        <button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="footer mt-auto py-3 bg-dark" style="height:50px">
-  <div class="container">
-    <span class="text-muted">Place sticky footer content here.</span>
-  </div>
-</footer>
-</div>
-    </div>
+      <b-card no-body v-if="!user">
+        <b-tabs
+          pills
+          card
+          fill
+          active-nav-item-class="bg-gradient"
+          class="text-center"
+        >
+          <b-tab title="Produtores Favoritos" active>
+            <b-card-text
+              >Para visualizar seus produtores favoritos em sua tela inicial<br /><br />
+              <router-link class="btn bg-color1 text-white btn-sm" to="/login"
+                >faça login</router-link
+              >
+              ou
+              <router-link
+                class="btn bg-color1 text-white btn-sm"
+                to="/cadastro"
+                >cadastre-se</router-link
+              >
+            </b-card-text>
+          </b-tab>
+          <b-tab title="Interesses">
+            <b-card-text
+              >Para visualizar resultados compatíveis com seus interesses
+              <br /><br />
+              <router-link class="btn bg-color1 text-white btn-sm" to="/login"
+                >faça login</router-link
+              >
+              ou
+              <router-link
+                class="btn bg-color1 text-white btn-sm"
+                to="/cadastro"
+                >cadastre-se</router-link
+              >
+            </b-card-text>
+          </b-tab>
+        </b-tabs>
+      </b-card>
+    </span>
+  </page>
 </template>
+
+<script>
+import Page from "@/components/Page";
+export default {
+  components: {
+    Page,
+  },
+
+  computed: {
+    user() {
+      const user = this.$store.getters["user/user"];
+
+      console.log(user);
+
+      if (user === null) {
+        this.$store.dispatch("user/authenticated");
+      }
+
+      return user;
+    },
+  },
+};
+</script>

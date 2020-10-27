@@ -1,15 +1,16 @@
 <template>
   <div>
+    <header-navbar class="header-absolute"></header-navbar>
     <div class="w-100 full-height bg-vegetables"></div>
 
-    <div class="container-fluid full-height">
+    <div class="container full-height">
       <div class="row justify-content-center full-height align-items-center">
-        <div class="col-12 col-md-6 col-lg-4 text-center">
+        <div class="col-12 col-md-6 col-lg-5 text-center">
           <h4 class="mb-4">Bem-vindo(a) ao Locavore!</h4>
 
-          <div class="card border-success">
+          <div class="card border-color1">
             <form @submit.prevent="login">
-              <div class="card-header text-white bg-success">
+              <div class="card-header text-white bg-color1">
                 Acesse sua conta
               </div>
               <div class="card-body">
@@ -48,7 +49,7 @@
 
                   <div class="col-sm-6 text-right">
                     <button
-                      class="btn btn-success"
+                      class="btn bg-gradient text-white"
                       type="submit"
                       :disabled="loading"
                     >
@@ -66,7 +67,13 @@
 </template>
 
 <script>
+import HeaderNavbar from '@/components/HeaderNavbar'
+
 export default {
+  components: {
+    HeaderNavbar
+  }, 
+
   data() {
     return {
       loading: false,
@@ -96,6 +103,8 @@ export default {
             localStorage.setItem("authToken", response.data.token);
           }
 
+          this.$store.dispatch("user/authenticated")
+
           this.$router.push("/");
         })
         .catch((error) => {
@@ -123,3 +132,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.header-absolute{
+  position: absolute;
+  width: 100%;
+  z-index: 9;
+}
+</style>

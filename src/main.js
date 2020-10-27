@@ -8,6 +8,7 @@ import VueRouter from 'vue-router'
 import VueSweetalert2 from 'vue-sweetalert2';
  
 import 'sweetalert2/dist/sweetalert2.min.css';
+import '@fortawesome/fontawesome-free/css/all.css';
 
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
@@ -19,4 +20,11 @@ new Vue({
   router,
   store,
   render: h => h(App),
+  methods: {
+    logout() {
+      localStorage.removeItem("authToken")
+      router.push('/login')
+    }
+  }
+
 }).$mount('#app')

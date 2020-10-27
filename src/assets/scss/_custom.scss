@@ -19,4 +19,47 @@ body{
     background: url("~@/assets/img/veggies.jpg");
     background-size: 8%;
     opacity: 0.2;
+    top: 0;
+    z-index: -9
   }
+
+.bg-gradient{
+    background: linear-gradient(87deg,#2dce89,#2dcecc) !important;
+}
+
+.w-md-auto{
+    @media (min-width: 768px) { width: auto!important; }
+}
+
+.border-color1{
+    border-color: #1d8280;
+}
+.bg-color1{
+    background-color:#2dcecc
+}
+.bg-color2{
+    background-color:#2dce89
+}
+
+.link-white{
+    a{
+        color: #fff !important;
+    }
+}
+.link-color1{
+    a{
+        color: #1d8280 !important;
+    }
+}
+
+.no-hover:hover{
+    text-decoration: none;
+}
+
+.text-extra-sm{
+    font-size: 0.6rem;
+}
+
+.v-middle{
+    vertical-align: middle!important;
+}
