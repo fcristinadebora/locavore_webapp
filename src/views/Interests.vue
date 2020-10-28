@@ -2,9 +2,9 @@
   <page>
     <span slot="content">
       <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
       >
-        <h1 class="h3">Meus interesses</h1>
+        <h1 class="h4">Meus interesses</h1>
       </div>
 
         
@@ -60,19 +60,6 @@ export default {
     return {
       i: 1,
     };
-  },
-  computed: {
-    user() {
-      const user = this.$store.getters["user/user"];
-
-      console.log(user);
-
-      if (user === null) {
-        this.$store.dispatch("user/authenticated");
-      }
-
-      return user;
-    },
-  },
+  }
 };
 </script>

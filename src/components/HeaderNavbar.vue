@@ -46,11 +46,11 @@
         </b-nav-item>
 
 
-        <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/login" v-if="user">
-          Perfil
+        <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/perfil" v-if="user">
+          Meu Perfil
         </b-nav-item>
-        <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/login" v-if="user">
-          Endereços
+        <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/enderecos" v-if="user">
+          Meus Endereços
         </b-nav-item>
         <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/login" v-if="user">
           Produtores Favoritos
