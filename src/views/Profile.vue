@@ -34,7 +34,7 @@
       <div class="col-12">
         <div class="row justify-content-center">
           <div
-            class="col-md-2 col-10 p-3 overflow-auto rounded-circle justify-content-center align-items-center d-flex border-color1 border profile-img"
+            class="col-md-2 col-10 p-0 overflow-auto rounded-circle justify-content-center align-items-center d-flex border-color1 border profile-img"
             :style="
               'background: url(' +
               profileImageUrl +
@@ -70,6 +70,9 @@
             </div>
 
             <div v-if="editing" class="w-100">
+              <div class="form-group row mt-2">
+                <file-upload target-url="images" @upload="setProfileImage"></file-upload>
+              </div>
               <div class="form-group row">
                 <label class="col-md-3 col-lg-2 col-form-label font-weight-bold"
                   >Nome:
@@ -141,10 +144,12 @@
 
 <script>
 import Page from "@/components/Page";
+import FileUpload from "@/components/FileUpload";
 import { getApiUrl } from "@/common/api";
 export default {
   components: {
     Page,
+    FileUpload
   },
 
   data() {
@@ -329,6 +334,17 @@ export default {
           icon: "error",
         })
       })
+    },
+
+    setProfileImage(response){
+      if(response.data.image){
+        this.form = {
+          ...this.form,
+          profile_file_name: response.data.image.file_name,
+          profile_file_path: response.data.image.file_path,
+          image_id: response.data.image.id
+        }
+      }
     }
   },
 };
