@@ -104,8 +104,7 @@
               </div>
             </div>
           </div>
-
-          <div class="row pr-3" v-if="profile && profile.is_grower">
+          <div class="row pr-3" v-if="(profile && profile.is_grower && !editing) || (editing && form.is_grower)">
             <div class="form-group col-12">
               <label class="col-form-label font-weight-bold">Descrição</label>
               <p v-html="profile.description" v-if="!editing"></p>
@@ -126,7 +125,6 @@
                   {{ tag.description }}
                 </span>
               </div>
-
 
               <multiselect v-if="editing" v-model="form.tags" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="description" track-by="id" :options="availableTags" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
             </div>
@@ -269,8 +267,10 @@ export default {
     },
 
     save() {
-      if(this.profile.is_grower){
+      if(this.form.is_grower){
         this.saveGrower()
+      }else{
+        this.saveDefault()
       }
     },
 
@@ -304,7 +304,31 @@ export default {
     },
 
     saveDefault(){
+      const data = {...this.form}
 
+      this.$store.dispatch('user/update', { id: this.form.id, data: data})
+      .then(() => {
+        this.$swal.fire({
+          title: "Ok!",
+          text: "Dados alterados com sucesso!",
+          icon: "success",
+        })
+
+        this.getProfile()
+        this.setEditing()
+      })
+      .catch(error => {
+        var message = 'Falha ao atualizar os dados!';
+        if(error.response.data.email){
+          message = error.response.data.email[0]
+        }
+
+        this.$swal.fire({
+          title: "Oops!",
+          text: message,
+          icon: "error",
+        })
+      })
     }
   },
 };

@@ -32,6 +32,9 @@ export default {
     },
     getProfile () {
       return api.get('profile')
+    },
+    update (commit, { id, data }) {
+      return api.put(`users/${id}`, { ...data })
     }
   },
 
