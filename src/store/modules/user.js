@@ -4,7 +4,8 @@ export default {
   namespaced: true,
 
   state: {
-    user: null
+    user: null,
+    profile: null
   },
 
   getters: {
@@ -28,6 +29,9 @@ export default {
         commit('setUser', false)
         throw new Error(error)
       }
+    },
+    getProfile () {
+      return api.get('profile')
     }
   },
 

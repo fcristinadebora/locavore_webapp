@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100">
+  <div class="h-100 pb-5">
     <header-navbar></header-navbar>
    
     <div class="container mt-4">

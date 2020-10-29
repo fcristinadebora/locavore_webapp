@@ -16,8 +16,10 @@
     "sass": "^1.26.11",
     "sass-loader": "^10.0.2",
     "vue": "^2.6.12",
+    "vue-multiselect": "^2.1.6",
     "vue-router": "^3.4.5",
     "vue-sweetalert2": "^3.0.8",
+    "vue-wysiwyg": "^1.7.2",
     "vuex": "^3.5.1"
   },
   "devDependencies": {

@@ -71,12 +71,10 @@
 export default {
   computed: {
     user() {
-      const user = this.$store.getters["user/user"];
-
-      console.log(user);
-
+      const user = this.$store.getters["user/user"]
+      
       if (user === null) {
-        this.$store.dispatch("user/authenticated");
+        this.$store.dispatch("user/authenticated")
       }
 
       return user;

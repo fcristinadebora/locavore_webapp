@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 const getApiUrl = () => {
-  return 'http://localhost:8000'
+  return 'http://localhost:8000/'
 }
 
 const getLocalStorageToken = () => {
-  console.log('kkkk',localStorage.getItem('authToken'))
   if (!localStorage.getItem('authToken')) {
     return null
   }
@@ -33,3 +32,5 @@ client.interceptors.request.use((config) => {
 })
 
 export default client
+
+export { getApiUrl }
