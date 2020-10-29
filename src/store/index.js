@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import user from './modules/user'
 import tag from './modules/tag'
 import grower from './modules/grower'
+import productCategory from './modules/productCategory'
 
 Vue.use(Vuex)
 
@@ -13,7 +14,8 @@ export default new Vuex.Store({
   modules: {
     user,
     tag,
-    grower
+    grower,
+    productCategory
   },
   strict: debug
 })

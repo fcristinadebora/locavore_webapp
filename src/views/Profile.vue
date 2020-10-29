@@ -122,7 +122,7 @@
               <label class="col-form-label font-weight-bold">Tags</label>
 
               <div class="w-100" v-if="!editing">
-                <p v-if="!profile.tags">Nenhuma tag associada</p>
+                <p v-if="!profile.tags || (profile.tags && !profile.tags.length)">Nenhuma tag associada</p>
 
                 <span class="badge bg-gradient text-white mr-2" v-for="(tag, index) in profile.tags" :key="index">
                   {{ tag.description }}
@@ -132,8 +132,24 @@
               <multiselect v-if="editing" v-model="form.tags" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="description" track-by="id" :options="availableTags" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
             </div>
 
+            <div class="form-group col-12">
+              <label class="col-form-label font-weight-bold">Categorias de produtos</label>
 
-            
+              <div class="w-100" v-if="!editing">
+                <p v-if="!profile.categories || (profile.categories && !profile.categories.length)">Nenhuma categoria selecionada associada</p>
+
+                <span class="badge bg-gradient text-white mr-2" v-for="(category, index) in profile.categories" :key="index">
+                  {{ category.description }}
+                </span>
+              </div>
+
+              <div class="w-100" v-if="editing">
+                <label class="text-sm">Selecione as categorias que produz</label>
+                <label :for="'cat_' + index" class="w-100" v-for="(category, index) in availableCategories" :key="index">
+                  <input v-model="form.categories" :value="category.id" type="checkbox" :id="'cat_' + index"> &nbsp;{{ category.description }}
+                </label>
+              </div>
+            </div>            
           </div>
         </div>
       </div>
@@ -161,7 +177,8 @@ export default {
       value: [
         { description: 'Javascript', id: 'js' }
       ],
-      availableTags: []
+      availableTags: [],
+      availableCategories: []
       
     };
   },
@@ -192,6 +209,7 @@ export default {
     this.setProfileImageHeight()
     this.getProfile()
     this.getAvailableTags()
+    this.getAvailableCategories()
   },
 
   methods: {
@@ -202,7 +220,8 @@ export default {
     setEditing() {
       this.form = {
         ...this.profile,
-        tags: this.profile.tags
+        tags: this.profile.tags,
+        categories: this.profile.categories.map(item => item.id)
       }
 
       this.editing = !this.editing
@@ -223,7 +242,7 @@ export default {
       .then(response => {
         this.profile = response.data.profile
         if(this.profile.is_grower){
-          this.getGrowerTags()
+          this.getGrowerTagsAndCategories()
         }
       })
       .catch(error => {
@@ -232,11 +251,12 @@ export default {
       })
     },
 
-    getGrowerTags () {
+    getGrowerTagsAndCategories () {
       this.$store.dispatch("grower/getById", {
         id: this.profile.id,
         params: {
           with_tags: true,
+          with_categories: true,
         }
       })
       .then(response => {
@@ -245,7 +265,8 @@ export default {
         if(response.data.grower.identification_tags.length){
           this.profile = {
             ...this.profile,
-            tags: response.data.grower.identification_tags.map(tag => tag.tag)
+            tags: response.data.grower.identification_tags.map(tag => tag.tag),
+            categories: response.data.grower.product_categories.map(category => category.product_category)
           }
 
           return true
@@ -271,6 +292,17 @@ export default {
       })
     },
 
+    getAvailableCategories () {
+      this.$store.dispatch("productCategory/fetchFromApi")
+      .then(response => {
+        this.availableCategories = Array.from(response.data.categories)
+      })
+      .catch(error => {
+        console.error('Falha ao obter categorias disponíveis', error)
+        this.availableCategories = []
+      })
+    },
+
     save() {
       if(this.form.is_grower){
         this.saveGrower()
@@ -280,6 +312,7 @@ export default {
     },
 
     saveGrower() {
+      this.form.categories = this.form.categories.filter(item => item !== null)
       const data = {...this.form}
 
       this.$store.dispatch('grower/update', { id: this.form.id, data: data})
@@ -290,8 +323,9 @@ export default {
           icon: "success",
         })
 
-        this.getGrowerTags()
+        this.getGrowerTagsAndCategories()
         this.getProfile()
+        this.getAvailableTags()
         this.setEditing()
       })
       .catch(error => {
