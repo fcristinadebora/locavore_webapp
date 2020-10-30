@@ -27,7 +27,10 @@
       </div>
 
       <div class="card">
-        <div class="card-body text-left">
+        <div class="card-body text-center" v-if="$route.params.id && !this.currentProduct">
+          <i class="fa fa-spinner fa-pulse"></i> Carregando...
+        </div>
+        <div class="card-body text-left" v-if="!$route.params.id || ($route.params.id && this.currentProduct)">
           <div class="row">
             <div class="form-group col-md-4">
               <label for="">Nome <span class="text-danger">*</span></label>
@@ -75,7 +78,8 @@ export default {
     return {
       categories: null,
       tags: null,
-      form: {}
+      form: {},
+      currentProduct: null
     };
   },
 
@@ -83,6 +87,10 @@ export default {
     this.getCategories()
     this.getTags()
     this.resetForm()
+
+    if(this.$route.params.id){
+      this.getProductData()
+    }
   },
 
   computed:{
@@ -137,6 +145,32 @@ export default {
       }
     },
 
+    getProductData(){
+      this.$store.dispatch('product/getById', { id:this.form.id, params: { with_tags: true } })
+      .then((response) => {
+        this.currentProduct = response.data.product
+        this.form = {
+          ...this.form,
+          name: this.currentProduct.name,
+          product_category_id: this.currentProduct.product_category_id,
+          price: this.currentProduct.price,
+          description : this.currentProduct.description,
+          tags: this.currentProduct.tags.map(tag => tag.tag),
+        }
+      })
+      .catch(error => {
+        var message = 'Falha ao carregar dados do produto!';
+        
+        this.$swal.fire({
+          title: "Oops!",
+          text: message,
+          icon: "error",
+        })
+
+        console.error(message, error)
+      })
+    },
+
     save() {
       if(this.form.id){
         this.update()  
@@ -161,6 +195,32 @@ export default {
       })
       .catch(error => {
         var message = 'Falha ao cadastrar produto!';
+        
+        this.$swal.fire({
+          title: "Oops!",
+          text: message,
+          icon: "error",
+        })
+
+        console.error(message, error)
+      })
+    },
+
+    update () {
+      const data = {...this.form}
+
+      this.$store.dispatch('product/update', { id: this.form.id, data: data})
+      .then(() => {
+        this.$swal.fire({
+          title: "Ok!",
+          text: "Produto atualizado com sucesso!",
+          icon: "success",
+        })
+
+        this.$router.push('/produtos')
+      })
+      .catch(error => {
+        var message = 'Falha ao atualizar produto!';
         
         this.$swal.fire({
           title: "Oops!",

@@ -15,12 +15,16 @@ export default {
       return api.get('products', { params: params })
     },
 
+    getById(state, { id, params }) {
+      return api.get(`products/${id}`, { params: params })
+    },
+
     create (commit, { data }) {
       return api.post(`products`, { ...data })
     },
 
     update (commit, { id, data }) {
-      return api.post(`products/${id}`, { ...data })
+      return api.put(`products/${id}`, { ...data })
     },
 
     delete (commit, { id }) {

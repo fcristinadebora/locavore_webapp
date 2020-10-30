@@ -36,10 +36,11 @@
           :key="index"
         >
           <div class="card-body d-flex justify-content-between">
-            <div class="overflow-hidden">
+            <div>
               <strong class="mb-2">{{ product.name }}</strong><br>
-              <span class="mb-2"><strong>Valor:</strong> {{ product.price ? 'R$ ' + product.price.toLocaleString() : 'Não informado' }}</span><br>
-              <span class="mb-2"><strong>Descricao:</strong> {{ product.description ? product.description : 'Não informado' }}</span>
+              <span class="mb-2"><strong>Valor:</strong> {{ product.price ? 'R$ ' + product.price.toLocaleString() : 'Não informado' }}</span>
+              <div class="mb-2 w-100"><strong>Descricao:</strong> 
+                <p class="overflow-hidden" style="height:50px" v-html="product.description ? product.description : 'Não informado'"></p></div>
             </div>
             <div class="card-buttons">
               <button class="btn btn-danger text-extra-sm card-buttons my-1" >
@@ -48,7 +49,7 @@
               <a class="btn btn-danger text-extra-sm card-buttons my-1" :href="'/produtos/editar/' + product.id" >
                 <i class="fa fa-trash"></i>
               </a>
-              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="{ path: '/produtos/editar/', params: {id: product.id} }" >
+              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/produtos/editar/${product.id}`" >
                 <i class="fa fa-edit"></i>
               </router-link>
             </div>
