@@ -42,6 +42,17 @@ new Vue({
       localStorage.removeItem("authToken")
       router.push('/login')
     }
+  },
+  computed: {
+    user () {
+      const user = store.getters["user/user"]
+
+      if (user === null) {
+        this.$store.dispatch("user/authenticated")
+      }
+
+      return user;
+    }
   }
 
 }).$mount('#app')

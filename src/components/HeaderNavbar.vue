@@ -49,6 +49,9 @@
         <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/perfil" v-if="user">
           Meu Perfil
         </b-nav-item>
+        <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/produtos" v-if="user && user.is_grower">
+          Produtos
+        </b-nav-item>
         <b-nav-item class="btn btn-block border-color1 p-0 link-white" href="/enderecos" v-if="user">
           Meus Endereços
         </b-nav-item>
@@ -71,13 +74,7 @@
 export default {
   computed: {
     user() {
-      const user = this.$store.getters["user/user"]
-      
-      if (user === null) {
-        this.$store.dispatch("user/authenticated")
-      }
-
-      return user;
+      return this.$root.user
     },
   },
 };

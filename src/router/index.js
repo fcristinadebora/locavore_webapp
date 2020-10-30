@@ -7,6 +7,8 @@ import Registration from '@/views/Registration'
 import Interests from '@/views/Interests'
 import Addresses from '@/views/Addresses'
 import Profile from '@/views/Profile'
+import Products from '@/views/Products'
+import ProductsForm from '@/views/ProductsForm'
 
 Vue.use(Router)
 
@@ -50,6 +52,24 @@ const router = new Router({
       name: 'Profile',
       component: Profile,
       meta: { title: `${appTitle} - Perfil` }
+    },
+    {
+      path: '/produtos',
+      name: 'Products',
+      component: Products,
+      meta: { title: `${appTitle} - Produtos` }
+    },
+    {
+      path: '/produtos/cadastro',
+      name: 'ProductsFormCreate',
+      component: ProductsForm,
+      meta: { title: `${appTitle} - Produtos - Cadastro` }
+    },
+    {
+      path: '/produtos/editar/:id',
+      name: 'ProductsFormUpdate',
+      component: ProductsForm,
+      meta: { title: `${appTitle} - Produtos - Editar` }
     }
   ]
 })
