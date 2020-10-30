@@ -28,7 +28,7 @@ export default {
     },
 
     delete (commit, { id }) {
-      return api.post(`delete/${id}`)
+      return api.delete(`products/${id}`)
     }
   },
 

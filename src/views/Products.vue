@@ -43,12 +43,9 @@
                 <p class="overflow-hidden" style="height:50px" v-html="product.description ? product.description : 'Não informado'"></p></div>
             </div>
             <div class="card-buttons">
-              <button class="btn btn-danger text-extra-sm card-buttons my-1" >
+              <button class="btn btn-danger text-extra-sm card-buttons my-1" type="submit" @click="deleteProduct(product.id)">
                 <i class="fa fa-trash"></i>
               </button>
-              <a class="btn btn-danger text-extra-sm card-buttons my-1" :href="'/produtos/editar/' + product.id" >
-                <i class="fa fa-trash"></i>
-              </a>
               <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/produtos/editar/${product.id}`" >
                 <i class="fa fa-edit"></i>
               </router-link>
@@ -97,8 +94,43 @@ export default {
         .catch((error) => {
           this.products = [];
           console.error("Falha ao obter produtos", error);
-        });
+        })
     },
+
+    deleteProduct (id) {
+      this.$swal.fire({
+        title: 'Deseja excluir o produto?',
+        text: "Não será possível desfazer essa ação",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Excluir'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$store.dispatch('product/delete', {id: id})
+          .then(() => {
+            this.$swal.fire({
+              title: "Ok!",
+              text: "Produto excluído!",
+              icon: "success",
+            })
+            this.currentPage = 1
+            this.getProducts()
+          })
+          .catch((error) => {
+            this.$swal.fire({
+              title: "Oops!",
+              text: "Falha ao excluir produto",
+              icon: "error",
+            })
+
+            console.error('falha ao excluir produto', error)
+          })
+        }
+      })
+      
+    }
   },
 };
 </script>
