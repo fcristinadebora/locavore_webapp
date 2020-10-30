@@ -6,6 +6,7 @@ import tag from './modules/tag'
 import grower from './modules/grower'
 import productCategory from './modules/productCategory'
 import product from './modules/product'
+import image from './modules/image'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ export default new Vuex.Store({
     tag,
     grower,
     productCategory,
-    product
+    product,
+    image
   },
   strict: debug
 })

@@ -9,6 +9,7 @@ import Addresses from '@/views/Addresses'
 import Profile from '@/views/Profile'
 import Products from '@/views/Products'
 import ProductsForm from '@/views/ProductsForm'
+import ProductsImages from '@/views/ProductsImages'
 
 Vue.use(Router)
 
@@ -70,6 +71,12 @@ const router = new Router({
       name: 'ProductsFormUpdate',
       component: ProductsForm,
       meta: { title: `${appTitle} - Produtos - Editar` }
+    },
+    {
+      path: '/produtos/imagens/:id',
+      name: 'ProductsImages',
+      component: ProductsImages,
+      meta: { title: `${appTitle} - Produtos - Imagens` }
     }
   ]
 })

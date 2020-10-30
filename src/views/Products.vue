@@ -37,7 +37,7 @@
         >
           <div class="card-body d-flex justify-content-between">
             <div>
-              <strong class="mb-2">{{ product.name }}</strong><br>
+              #{{ product.id }} - <strong class="mb-2">{{ product.name }}</strong><br>
               <span class="mb-2"><strong>Valor:</strong> {{ product.price ? 'R$ ' + product.price.toLocaleString() : 'Não informado' }}</span>
               <div class="mb-2 w-100"><strong>Descricao:</strong> 
                 <p class="overflow-hidden" style="height:50px" v-html="product.description ? product.description : 'Não informado'"></p></div>
@@ -46,8 +46,11 @@
               <button class="btn btn-danger text-extra-sm card-buttons my-1" type="submit" @click="deleteProduct(product.id)">
                 <i class="fa fa-trash"></i>
               </button>
-              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/produtos/editar/${product.id}`" >
+              <router-link class="btn btn-warning text-extra-sm card-buttons my-2" :to="`/produtos/editar/${product.id}`" >
                 <i class="fa fa-edit"></i>
+              </router-link>
+              <router-link class="btn btn-info text-extra-sm card-buttons my-1" :to="`/produtos/imagens/${product.id}`" >
+                <i class="fa fa-images"></i>
               </router-link>
             </div>
           </div>
@@ -115,6 +118,7 @@ export default {
               text: "Produto excluído!",
               icon: "success",
             })
+            this.products = null
             this.currentPage = 1
             this.getProducts()
           })

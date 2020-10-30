@@ -13,7 +13,7 @@
     </div>
 
     <label class="btn btn-default overflow-hidden">
-      <input type="file" ref="file" @change="selectFile" />
+      <input type="file" ref="file" :accept="accept" :multiple="multiple" @change="selectFile" />
     </label>
 
     <button
@@ -34,6 +34,8 @@ import fileUpload from "@/common/fileUpload";
 export default {
   props: {
     targetUrl: { type: String },
+    multiple: { type: Boolean, default: false },
+    accept: { type: String, default: '*' },
   },
 
   data() {
@@ -55,12 +57,16 @@ export default {
     upload() {
       this.progress = 0;
 
-      this.currentFile = this.selectedFiles.item(0);
+      if(this.multiple){
+        this.currentFile = this.selectedFiles
+      }else{
+        this.currentFile = this.selectedFiles.item(0)
+      }
       this.message = "Enviando arquivo...";
       fileUpload(
           this.currentFile,
           (event) => {
-            this.progress = Math.round((100 * event.loaded) / event.total);
+            this.progress = Math.round((100 * event.loaded) / event.total)
           },
           this.targetUrl
         )

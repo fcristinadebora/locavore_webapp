@@ -71,7 +71,7 @@
 
             <div v-if="editing" class="w-100">
               <div class="form-group row mt-2">
-                <file-upload target-url="images" @upload="setProfileImage"></file-upload>
+                <file-upload target-url="images" @upload="setProfileImage" accept="image/*"></file-upload>
               </div>
               <div class="form-group row">
                 <label class="col-md-3 col-lg-2 col-form-label font-weight-bold"
