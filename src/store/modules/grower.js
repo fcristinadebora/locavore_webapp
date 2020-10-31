@@ -23,11 +23,21 @@ export default {
         throw new Error(error)
       }
     },
+
     getById (commit, { id, params }) {
       return api.get(`growers/${id}`, { params: params })
     },
+
     update (commit, { id, data }) {
       return api.put(`growers/${id}`, { ...data })
+    },
+
+    attachImages (commit, { id, data }) {
+      return api.post(`growers/images/${id}`, { ...data })
+    },
+
+    getImages (commit, { id, params }) {
+      return api.get(`growers/images/${id}`, { params: params })
     }
   },
 

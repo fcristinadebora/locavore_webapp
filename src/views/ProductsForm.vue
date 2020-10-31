@@ -135,7 +135,7 @@ export default {
 
     resetForm() {
       this.form = {
-        user_id: this.$root.user.user_id,
+        user_id: this.$root.user.id,
         id: this.$route.params.id ? this.$route.params.id : null,
         name: null,
         product_category_id: '',

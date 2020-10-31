@@ -37,10 +37,9 @@ new Vue({
   router,
   store,
   render: h => h(App),
-  methods: {
-    logout() {
-      localStorage.removeItem("authToken")
-      router.push('/login')
+  data () {
+    return {
+      geoLocation: null
     }
   },
   computed: {
@@ -52,6 +51,12 @@ new Vue({
       }
 
       return user;
+    }
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("authToken")
+      router.push('/login')
     }
   }
 

@@ -5,17 +5,12 @@
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
       >
         <h1 class="h4">
-          Meus produtos
-          <span class="text-sm">
-            <i class="fa fa-angle-right"></i> Imagens</span
-          >
+          Imagens da página (produtor)
         </h1>
+      </div>
 
-        <div>
-          <router-link to="/produtos" class="btn btn-info btn-sm mr-2">
-            <i class="fa fa-arrow-circle-left"></i> Voltar
-          </router-link>
-        </div>
+      <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i> Use essa tela para enviar imagens que irão aparecer nos detalhes de sua página de produtor
       </div>
 
       <div class="card mb-3">
@@ -77,7 +72,6 @@ export default {
   data() {
     return {
       images: null,
-      productId: this.$route.params.id,
       apiAddr: getApiUrl(),
       hideFileUpload: false,
       form: []
@@ -88,6 +82,12 @@ export default {
     this.getImages()
   },
 
+  computed: {
+    growerId (){
+      return this.$root.user ? this.$root.user.id : null
+    }
+  },
+
   methods: {
     saveImages (response){
       const data = {
@@ -96,8 +96,8 @@ export default {
           })
       }
 
-      this.$store.dispatch('product/attachImages', {
-        id: this.productId,
+      this.$store.dispatch('grower/attachImages', {
+        id: this.growerId,
         data: data
       })
       .then(() => {
@@ -111,8 +111,8 @@ export default {
     },
      
     getImages(){
-      this.$store.dispatch('product/getImages', {
-        id: this.productId
+      this.$store.dispatch('grower/getImages', {
+        id: this.growerId
       })
       .then(response => {
         this.images = response.data.images.map(image => {
