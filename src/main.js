@@ -31,6 +31,18 @@ Vue.use(wysiwyg, {
 })
 Vue.component('multiselect', Multiselect)
 
+Vue.filter('toReais', function (value) {
+    if (!value) return ''
+    return value.toLocaleString('pt-BR', { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL' })
+})
+
+Vue.filter('toKm', function (value) {
+    if (!value) return ''
+    if (isNaN(parseFloat(value))) return value
+
+    return value.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 , style: 'decimal' }) + ' Km'
+})
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -39,7 +51,9 @@ new Vue({
   render: h => h(App),
   data () {
     return {
-      geoLocation: null
+      geoLocation: null,
+      searchParams: null,
+      searchForm: null
     }
   },
   computed: {

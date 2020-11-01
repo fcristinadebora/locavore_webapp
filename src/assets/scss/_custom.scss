@@ -27,8 +27,17 @@ body{
     background: linear-gradient(87deg,#2dce89,#2dcecc) !important;
 }
 
+.w-sm-auto{
+    @media (min-width: 576px) { width: auto!important; }
+}
 .w-md-auto{
     @media (min-width: 768px) { width: auto!important; }
+}
+.w-md-45{
+    @media (min-width: 768px) { width: 45%!important; }
+}
+.w-md-10{
+    @media (min-width: 768px) { width: 10%!important; }
 }
 
 .border-color1{
@@ -40,6 +49,9 @@ body{
 }
 .bg-color2{
     background-color:#2dce89
+}
+.text-color2{
+    color:#2dce89
 }
 
 .link-white{

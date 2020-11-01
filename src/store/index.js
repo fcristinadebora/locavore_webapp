@@ -7,6 +7,7 @@ import grower from './modules/grower'
 import productCategory from './modules/productCategory'
 import product from './modules/product'
 import image from './modules/image'
+import cidade from './modules/cidade'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default new Vuex.Store({
     grower,
     productCategory,
     product,
-    image
+    image,
+    cidade
   },
   strict: debug
 })

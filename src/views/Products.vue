@@ -38,7 +38,7 @@
           <div class="card-body d-flex justify-content-between">
             <div>
               #{{ product.id }} - <strong class="mb-2">{{ product.name }}</strong><br>
-              <span class="mb-2"><strong>Valor:</strong> {{ product.price ? 'R$ ' + product.price.toLocaleString() : 'Não informado' }}</span>
+              <span class="mb-2"><strong>Valor:</strong> {{ product.price | toReais }}</span>
               <div class="mb-2 w-100"><strong>Descricao:</strong> 
                 <p class="overflow-hidden" style="height:50px" v-html="product.description ? product.description : 'Não informado'"></p></div>
             </div>
@@ -85,7 +85,8 @@ export default {
           params: {
             page: this.currentPage,
             user_id: this.$root.user ? this.$root.user.id : null,
-          },
+            unique: true
+          }
         })
         .then((response) => {
             if(response.data.data.length == 0){

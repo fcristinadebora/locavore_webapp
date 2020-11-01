@@ -11,12 +11,14 @@ import Products from '@/views/Products'
 import ProductsForm from '@/views/ProductsForm'
 import ProductsImages from '@/views/ProductsImages'
 import GrowerImages from '@/views/GrowerImages'
+import SearchResult from '@/views/SearchResult'
 
 Vue.use(Router)
 
 const appTitle = 'Locavore'
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -83,6 +85,12 @@ const router = new Router({
       name: 'GrowerImages',
       component: GrowerImages,
       meta: { title: `${appTitle} - Perfil - Imagens` }
+    },
+    {
+      path: '/busca',
+      name: 'SearchResult',
+      component: SearchResult,
+      meta: { title: `${appTitle} - Resultados da busca` }
     }
   ]
 })

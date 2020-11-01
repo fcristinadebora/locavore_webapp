@@ -1,0 +1,281 @@
+<template>
+  <div class="w-100">
+    <form
+      class="form-inline w-100 d-flex justify-content-center justify-content-md-end"
+      @submit.prevent="search"
+    >
+      <div class="input-group mt-2 mt-md-0 mr-0 pr-md-2 w-100 w-md-45">
+        <input
+          type="text"
+          class="form-control border-0"
+          placeholder="Buscar"
+          aria-label="Buscar"
+          v-model="form.search"
+          aria-describedby="basic-addon2"
+        />
+      </div>
+      <div class="input-group mt-2 mt-md-0 mr-0 pr-md-2 w-100 w-md-45 border-0">
+        <div class="input-group-prepend">
+          <span class="input-group-text border-white"
+            ><i class="fas fa-map-marker-alt"></i
+          ></span>
+        </div>
+        <input
+          type="text"
+          class="form-control border-white"
+          placeholder="Local"
+          :value="localTypeStr"
+          readonly
+          aria-describedby="basic-addon2"
+        />
+        <div class="input-group-append">
+          <b-button
+            class="btn border-0 dropdown-toggle btn-light"
+            type="button"
+            data-toggle="dropdown"
+            v-b-modal.modalEnderecoBusca
+          ></b-button>
+        </div>
+      </div>
+      <div class="input-group mt-2 mt-md-0 mr-0 p-0 w-100 w-md-10">
+        <button class="btn btn-block bg-darker text-white">
+          <i class="fas fa-search"></i>
+          <span class="d-inline d-md-none">Buscar</span>
+        </button>
+      </div>
+    </form>
+
+    <b-modal
+      id="modalEnderecoBusca"
+      size="xl"
+      class="text-center"
+      title="Selecionar Local"
+      :hide-footer="true"
+      @shown="resetModal"
+    >
+      <div class="col-12">
+        <div class="row form-group">
+          <div class="col-sm-5 pr-sm-0">
+            <select class="form-control" v-model="location.estado">
+              <option value="">Estado</option>
+              <option
+                :value="estado"
+                v-for="(estado, index) in estados"
+                :key="index"
+              >
+                {{ estado.nome }}
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-5 px-sm-0">
+            <select class="form-control" v-model="location.cidade">
+              <option value="">Cidade</option>
+              <option
+                :value="cidade"
+                v-for="(cidade, index) in cidades"
+                :key="index"
+              >
+                {{ cidade.nome }}
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-2 px-sm-0">
+            <button
+              class="btn-success btn btn-block"
+              :disabled="!(location.cidade && location.estado)"
+              @click="setLocation('city')"
+            >
+              <i class="fa fa-check"></i> Ok
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100 text-center">Ou</div>
+
+      <div class="my-2 w-100 text-center">
+        <div class="input-group mt-2 mt-md-0 mr-0 pr-md-2 col-12">
+          <input
+            type="text"
+            readonly
+            v-if="!location.coords"
+            class="form-control"
+            value="Selecione no mapa abaixo"
+          />
+          <input
+            type="text"
+            v-if="location.coords"
+            readonly
+            class="form-control border-success bg-success-opacity text-white"
+            value="Localização selecionada!"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-sm btn-success"
+              :disabled="!location.coords"
+              @click="setLocation('coord')"
+            >
+              <i class="fa fa-check"></i> Ok
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <location-picker
+          :key="locationPickerKey"
+          @select-location="selectLocation"
+        ></location-picker>
+      </div>
+    </b-modal>
+  </div>
+</template>
+
+<script>
+import LocationPicker from "@/components/LocationPicker";
+
+export default {
+  components: {
+    LocationPicker,
+  },
+
+  data() {
+    return {
+      form: {
+        string: "",
+        localType: null,
+        local: {},
+      },
+      location: {
+        cidade: "",
+        estado: "",
+        coords: false,
+      },
+      locationPickerKey: null,
+    };
+  },
+
+  computed: {    
+    estados() {
+      const estados = Array.from(this.$store.getters["cidade/estados"]);
+
+      if (estados) {
+        return estados.sort((a, b) => a.nome > b.nome);
+      }
+
+      return [];
+    },
+
+    cidades() {
+      const cidades = Array.from(
+        this.$store.getters["cidade/cidades"](this.location.estado.id)
+      );
+
+      if (cidades) {
+        return cidades.sort((a, b) => a.nome > b.nome);
+      }
+
+      return [];
+    },
+
+    localTypeStr() {
+      if (this.form.localType == "coord") {
+        return "Posição do mapa";
+      }
+
+      if (this.form.localType == "city") {
+        return `${this.form.local.city}, ${this.form.local.state}`;
+      }
+
+      return "";
+    },
+  },
+
+  mounted () {
+    if(this.$root.searchForm){
+      this.form = this.$root.searchForm
+    }
+
+    if(this.$route.name == 'SearchResult'){
+      this.getProducts()
+    }
+  },
+
+  methods: {
+    resetModal() {
+      this.setLocationPickerKey();
+    },
+
+    setLocationPickerKey() {
+      this.locationPickerKey = Math.random();
+    },
+
+    search() {
+      this.getProducts();
+    },
+
+    setLocation(type) {
+      this.form.localType = type;
+
+      if (type == "coord") {
+        this.form.local = { ...this.location.coords };
+      } else if (type == "city") {
+        this.form.local = {
+          city: this.location.cidade.nome,
+          state: this.location.estado.nome,
+        };
+      }
+
+      this.$bvModal.hide("modalEnderecoBusca");
+    },
+
+    getProducts() {
+      var params = {};
+
+      if (this.form.localType == "coord") {
+        params = {
+          lat: this.form.local.lat,
+          long: this.form.local.long,
+        };
+      } else if (this.form.localType == "city") {
+        params = {
+          city: this.form.local.city,
+          state: this.form.local.state,
+        };
+      }
+
+      params = {
+        ...params,
+        search_string: this.form.search,
+        order_by: "distance",
+      };
+
+      this.$root.searchParams = params
+      this.$root.searchForm = this.form
+
+      this.$store
+        .dispatch("product/get", {
+          params: params,
+        })
+        .finally(() => {
+          if(this.$route.name != 'SearchResult'){
+            this.$router.push("/busca")
+          }
+        })
+    },
+
+    selectLocation(location) {
+      this.location.coords = location;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.bg-success-opacity {
+  background-color: rgba(40, 167, 69, 0.8) !important;
+}
+.bg-darker {
+  background: linear-gradient(87deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.25));
+}
+</style>

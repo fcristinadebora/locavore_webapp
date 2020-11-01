@@ -4,15 +4,28 @@ export default {
   namespaced: true,
 
   state: {
-
+    items: null
   },
 
   getters: {
+    items: (state) => state.items
   },
 
   actions: {
-    get(state, { params }) {
-      return api.get('products', { params: params })
+    async get({commit}, { params }) {
+      commit('setItems', null)
+
+      try {
+        const response = await api.get('products', { params: params }) 
+        
+        commit('setItems', response.data)
+
+        return response
+      } catch (error) {
+        console.log(error)
+        commit('setItems', false)
+        throw new Error(error)
+      }
     },
 
     getById(state, { id, params }) {
@@ -41,6 +54,8 @@ export default {
   },
 
   mutations: {
-
+    setItems (state, items) {
+      state.items = items
+    }
   }
 }
