@@ -31,11 +31,11 @@ export default {
     },
 
     addItem(state, item) {
-        const items = state.items
+      const items = state.items
 
-        items.push(item)
-        
-        state.items = items
+      items.push(item)
+      
+      state.items = items
     }
   }
 }

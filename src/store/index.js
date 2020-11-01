@@ -8,6 +8,7 @@ import productCategory from './modules/productCategory'
 import product from './modules/product'
 import image from './modules/image'
 import cidade from './modules/cidade'
+import favorite from './modules/favorite'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
     productCategory,
     product,
     image,
-    cidade
+    cidade,
+    favorite
   },
   strict: debug
 })

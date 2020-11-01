@@ -182,11 +182,10 @@
                               >
                                 <div class="font-weight-bold text-center text-sm-left">
                                   {{ grower.name }}
-                                </div>
-                                <div
-                                  class="text-color2 text-center w-100 w-sm-auto"
-                                >
-                                  {{ grower.price | toReais }}
+                                  <span class="float-right text-danger">
+                                    <i class="fas fa-heart cursor-pointer" v-if="isFavorite(grower.id)" @click="removeFavorite(grower.id)"></i>
+                                    <i class="far fa-heart cursor-pointer" v-if="!isFavorite(grower.id)" @click="addFavorite(grower.id)"></i>
+                                  </span>
                                 </div>
                               </div>
                               <div
@@ -269,6 +268,20 @@ export default {
   computed: {
     products() {
       const items = this.$store.getters["product/items"];
+
+      return items;
+    },
+
+    favorites() {
+      const items = this.$store.getters["favorite/items"];
+
+      if(!items) {
+        this.$store.dispatch("favorite/fetchFromApi", { params: {
+          user_id: this.$root.user.id
+        }})
+      }
+
+      console.log('items', items)
 
       return items;
     },
@@ -357,9 +370,36 @@ export default {
         .finally(() => {
         })
     },
+
+    isFavorite(grower_id){
+      if(!this.favorites){
+        return false
+      }
+
+      return this.favorites.some(favorite => {
+        return favorite.favorite_user_id == grower_id
+      })
+    },
+
+    addFavorite (grower_id) {
+      const data = {
+        user_id: this.$root.user.id,
+        favorite_user_id: grower_id
+      }
+
+      this.$store.dispatch('favorite/create', {data: data})
+    },
+
+    removeFavorite (grower_id) {
+      const favorite = this.favorites.find(favorite => {
+        return favorite.favorite_user_id == grower_id
+      })
+
+      this.$store.dispatch('favorite/delete', {id: favorite.id})
+    }
   },
 };
-</script>item-distance
+</script>
 
 <style lang="scss" scoped>
 .item-text {
