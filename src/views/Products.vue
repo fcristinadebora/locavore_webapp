@@ -39,8 +39,8 @@
             <div>
               #{{ product.id }} - <strong class="mb-2">{{ product.name }}</strong><br>
               <span class="mb-2"><strong>Valor:</strong> {{ product.price | toReais }}</span>
-              <div class="mb-2 w-100"><strong>Descricao:</strong> 
-                <p class="overflow-hidden" style="height:50px" v-html="product.description ? product.description : 'Não informado'"></p></div>
+              <div class="mb-2 w-100 pr-3"><strong>Descricao:</strong> 
+                <p class="overflow-hidden" style="height:50px" v-html="product.description.length ? product.description : 'Não informado'"></p></div>
             </div>
             <div class="card-buttons">
               <button class="btn btn-danger text-extra-sm card-buttons my-1" type="submit" @click="deleteProduct(product.id)">

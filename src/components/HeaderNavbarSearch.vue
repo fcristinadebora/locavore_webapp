@@ -132,7 +132,8 @@
 </template>
 
 <script>
-import LocationPicker from "@/components/LocationPicker";
+import LocationPicker from "@/components/LocationPicker"
+import { EventBus } from '@/common/eventBus.js'
 
 export default {
   components: {
@@ -194,10 +195,8 @@ export default {
   mounted () {
     if(this.$root.searchForm){
       this.form = this.$root.searchForm
-    }
-
-    if(this.$route.name == 'SearchResult'){
-      this.getProducts()
+    }else{
+      this.$root.searchForm = this.form
     }
   },
 
@@ -211,7 +210,11 @@ export default {
     },
 
     search() {
-      this.getProducts();
+      this.$root.searchForm = this.form
+      EventBus.$emit('search', 'search')
+      if(this.$route.name != 'SearchResult'){
+        this.$router.push("/busca")
+      }
     },
 
     setLocation(type) {
@@ -228,42 +231,7 @@ export default {
 
       this.$bvModal.hide("modalEnderecoBusca");
     },
-
-    getProducts() {
-      var params = {};
-
-      if (this.form.localType == "coord") {
-        params = {
-          lat: this.form.local.lat,
-          long: this.form.local.long,
-        };
-      } else if (this.form.localType == "city") {
-        params = {
-          city: this.form.local.city,
-          state: this.form.local.state,
-        };
-      }
-
-      params = {
-        ...params,
-        search_string: this.form.search,
-        order_by: "distance",
-      };
-
-      this.$root.searchParams = params
-      this.$root.searchForm = this.form
-
-      this.$store
-        .dispatch("product/get", {
-          params: params,
-        })
-        .finally(() => {
-          if(this.$route.name != 'SearchResult'){
-            this.$router.push("/busca")
-          }
-        })
-    },
-
+    
     selectLocation(location) {
       this.location.coords = location;
     },

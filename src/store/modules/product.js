@@ -18,7 +18,11 @@ export default {
       try {
         const response = await api.get('products', { params: params }) 
         
-        commit('setItems', response.data)
+        if(response.data.data.length == 0){
+          commit('setItems', false)  
+        }else{
+          commit('setItems', response.data)
+        }
 
         return response
       } catch (error) {

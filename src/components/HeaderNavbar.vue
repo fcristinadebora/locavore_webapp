@@ -16,7 +16,7 @@
         <search></search>
       </div>
     </div>
-    <b-collapse is-nav id="nav_collapse" class="container pt-3">
+    <b-collapse is-nav id="nav_collapse" class="container-fluid pt-3">
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <b-nav-item class="btn btn-block bg-light p-0 link-color1" to="/">

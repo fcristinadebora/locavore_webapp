@@ -12,14 +12,22 @@ export default {
   },
 
   actions: {
-    async fetchFromApi ({commit}) {
+    async get({commit}, { params }) {
+      commit('setItems', null)
+
       try {
-        const response = await api.get('growers')
+        const response = await api.get('growers', { params: params }) 
         
-        commit('setItems', response.data.tags)
+        if(response.data.data.length == 0){
+          commit('setItems', false)  
+        }else{
+          commit('setItems', response.data)
+        }
+
         return response
       } catch (error) {
-        commit('setItems', [])
+        console.log(error)
+        commit('setItems', false)
         throw new Error(error)
       }
     },
