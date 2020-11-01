@@ -50,7 +50,7 @@
               <input type="number" class="form-control" v-model="form.price" />
             </div>
             <div class="form-group col-12">
-              <label for="">Descrição</label>
+              <label for="">Detalhes</label>
               <wysiwyg class="w-100"  v-model="form.description" />
             </div>
             <div class="form-group col-12">

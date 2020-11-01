@@ -116,6 +116,11 @@
                               >
                             </div>
                           </div>
+                          <div class="row">
+                            <div class="w-100 pt-2">
+                              <router-link :to="`produto/${product.id}`" class="btn btn-block border-info text-center">Ver detalhes</router-link>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -180,7 +185,7 @@
                               <div
                                 class="w-100 d-block d-sm-flex mt-3 my-sm-0 justify-content-between"
                               >
-                                <div class="font-weight-bold text-center text-sm-left">
+                                <div class="font-weight-bold text-center text-sm-left w-100">
                                   {{ grower.name }}
                                   <span class="float-right text-danger">
                                     <i class="fas fa-heart cursor-pointer" v-if="isFavorite(grower.id)" @click="removeFavorite(grower.id)"></i>
@@ -229,6 +234,11 @@
                                 :key="index"
                                 >#{{ tag.tag.description }}</span
                               >
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="w-100 pt-2">
+                              <router-link :to="`produtor/${grower.id}`" class="btn btn-block border-info text-center">Ver detalhes</router-link>
                             </div>
                           </div>
                         </div>

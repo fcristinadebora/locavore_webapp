@@ -12,6 +12,7 @@ import ProductsForm from '@/views/ProductsForm'
 import ProductsImages from '@/views/ProductsImages'
 import GrowerImages from '@/views/GrowerImages'
 import SearchResult from '@/views/SearchResult'
+import ProductDetails from '@/views/ProductDetails'
 
 Vue.use(Router)
 
@@ -91,7 +92,13 @@ const router = new Router({
       name: 'SearchResult',
       component: SearchResult,
       meta: { title: `${appTitle} - Resultados da busca` }
-    }
+    },
+    {
+      path: '/produto/:id',
+      name: 'ProductDetails',
+      component: ProductDetails,
+      meta: { title: `${appTitle} - Detalhes do produto` }
+    },
   ]
 })
 

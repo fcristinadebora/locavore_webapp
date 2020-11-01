@@ -39,7 +39,7 @@
             <div>
               #{{ product.id }} - <strong class="mb-2">{{ product.name }}</strong><br>
               <span class="mb-2"><strong>Valor:</strong> {{ product.price | toReais }}</span>
-              <div class="mb-2 w-100 pr-3"><strong>Descricao:</strong> 
+              <div class="mb-2 w-100 pr-3"><strong>Detalhes:</strong> 
                 <p class="overflow-hidden" style="height:50px" v-html="product.description.length ? product.description : 'Não informado'"></p></div>
             </div>
             <div class="card-buttons">
