@@ -193,7 +193,7 @@ export default {
     },
 
     getItemData(){
-      this.$store.dispatch('address/getById', { id:this.form.id })
+      this.$store.dispatch('address/getById', { id:this.form.id, params: { with_tags: true } })
       .then((response) => {
         this.address = response.data
         this.form = {

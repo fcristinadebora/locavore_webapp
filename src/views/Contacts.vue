@@ -4,10 +4,10 @@
       <div
         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
       >
-        <h1 class="h4">Meus endereços</h1>
+        <h1 class="h4">Meus endereços - Contatos</h1>
 
         <router-link
-          to="/enderecos/cadastro"
+          :to="`/enderecos/${$route.addressId}/contatos/cadastro`"
           class="btn bg-gradient btn-sm text-white"
         >
           <i class="fa fa-plus"></i> Novo
@@ -45,11 +45,11 @@
               <button class="btn btn-danger text-extra-sm card-buttons my-1" type="button" @click="deleteItem(addr.id)">
                 <i class="fa fa-trash"></i>
               </button>
-              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/enderecos/editar/${addr.id}`">
+              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/enderecos/${$route.addressId}/contatos/editar/${addr.id}`">
                 <i class="fa fa-edit"></i>
               </router-link>
-              <router-link class="btn btn-info text-extra-sm card-buttons my-1" :to="`/enderecos/${addr.id}/contatos`">
-                <i class="far fa-address-book"></i>
+              <router-link class="btn btn-info text-extra-sm card-buttons my-1" :to="`/enderecos/${$route.addressId}/contatos`">
+                <i class="far fa-contact-card"></i>
               </router-link>
             </div>
           </div>
@@ -69,6 +69,7 @@ export default {
   data() {
     return {
       currentPage: 1,
+      address: null,
       items: null,
     };
   },
@@ -88,6 +89,38 @@ export default {
   },
 
   methods: {
+    getAddress(){
+      this.$store.dispatch('address/getById', { id:this.$route.addressId })
+      .then((response) => {
+        this.address = response.data
+        this.form = {
+          ...this.form,
+          street: this.address.street,
+          number: this.address.number,
+          complement: this.address.complement,
+          postal_code: this.address.postal_code,
+          district: this.address.district,
+          state: this.estados.find(item => item.nome == this.address.state),
+          lat: this.address.lat,
+          long: this.address.long,
+          name: this.address.name
+        }
+
+        this.form.city = this.cidades.find(item => item.nome == this.address.city)
+      })
+      .catch(error => {
+        var message = 'Falha ao carregar dados!';
+        
+        this.$swal.fire({
+          title: "Oops!",
+          text: message,
+          icon: "error",
+        })
+
+        console.error(message, error)
+      })
+    },
+
     getItems() {
       this.$store
         .dispatch("address/get", {
