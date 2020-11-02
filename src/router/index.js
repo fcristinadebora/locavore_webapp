@@ -13,6 +13,7 @@ import ProductsImages from '@/views/ProductsImages'
 import GrowerImages from '@/views/GrowerImages'
 import SearchResult from '@/views/SearchResult'
 import ProductDetails from '@/views/ProductDetails'
+import GrowerDetails from '@/views/GrowerDetails'
 
 Vue.use(Router)
 
@@ -99,6 +100,12 @@ const router = new Router({
       component: ProductDetails,
       meta: { title: `${appTitle} - Detalhes do produto` }
     },
+    {
+      path: '/produtor/:id',
+      name: 'GrowerDetails',
+      component: GrowerDetails,
+      meta: { title: `${appTitle} - Detalhes do produtor` }
+    }
   ]
 })
 
