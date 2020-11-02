@@ -1,15 +1,129 @@
 <template>
   <page>
     <span slot="content">
-      <span class="btn btn-block bg-gradient text-white mb-3 font-weight-bold">Bem-vindo(a) ao Locavore!</span>
+      <span class="btn btn-block bg-gradient text-white mb-3 font-weight-bold"
+        >Bem-vindo(a) ao Locavore!</span
+      >
 
       <b-card no-body v-if="user">
         <b-tabs pills card fill active-nav-item-class="bg-gradient">
           <b-tab title="Produtores Favoritos" active>
-            <b-card-text
-              >Você ainda não favoritou nenhum produtor. Busque e favorite seus
-              produtores favoritos para vê-los em sua tela inicial</b-card-text
+            <b-card-text v-if="!favorites || (growers && !growers.data.length)"
+              >Você ainda não favoritou nenhum produtor. Busque e favorite
+              produtores para vê-los em sua tela inicial</b-card-text
             >
+
+            <div class="row" v-if="growers && growers.data">
+              <div
+                class="col-12 col-lg-12 col-xl-6 py-3"
+                v-for="(grower, index) in growers.data"
+                :key="index"
+              >
+                <div class="card result-item">
+                  <div class="card-body">
+                    <div class="col-12">
+                      <div class="row d-flex flex-row">
+                        <div
+                          class="item-image d-flex align-items-center rounded"
+                          :style="
+                            grower.favorite_user.profile_file_path.length
+                              ? 'background: url(' +
+                                apiUrl +
+                                grower.favorite_user.profile_file_path +
+                                grower.favorite_user.profile_file_name +
+                                ')'
+                              : null
+                          "
+                        >
+                          <i
+                            class="fa fa-image"
+                            v-if="
+                              !grower.favorite_user.profile_file_path.length
+                            "
+                          ></i>
+                        </div>
+                        <div
+                          class="item-text ml-sm-3 d-flex flex-column justify-content-between"
+                        >
+                          <div
+                            class="w-100 d-block d-sm-flex mt-3 my-sm-0 justify-content-between"
+                          >
+                            <div
+                              class="font-weight-bold text-center text-sm-left w-100"
+                            >
+                              {{ grower.favorite_user.name }}
+                              <span class="float-right text-danger">
+                                <i
+                                  class="fas fa-heart cursor-pointer"
+                                  @click="
+                                    removeFavorite(grower.favorite_user.id)
+                                  "
+                                ></i>
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="font-weight-bold text-center text-sm-left"
+                            v-if="
+                              grower.favorite_user.product_categories.length > 0
+                            "
+                          >
+                            <span
+                              class="badge bg-gradient mb-1 w-100 w-sm-auto mr-2"
+                              v-for="(category, index) in grower.favorite_user
+                                .product_categories"
+                              :key="index"
+                              >{{ category.product_category.description }}</span
+                            >
+                          </div>
+                          <div
+                            class="w-100 d-block d-sm-flex justify-content-between align-items-end"
+                          >
+                            <div
+                              class="mr-3 text-sm w-100 w-sm-auto text-center text-sm-left"
+                            >
+                              <i class="fa fa-map-signs"></i>
+                              {{ grower.favorite_user.addresses[0].street }},
+                              {{ grower.favorite_user.addresses[0].district }},
+                              {{ grower.favorite_user.addresses[0].city }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row pt-3">
+                        <div class="w-100 text-center text-sm-left">
+                          <span
+                            class="badge mr-2 bg-color2"
+                            v-for="(tag, index) in grower.favorite_user.identification_tags"
+                            :key="index"
+                            >#{{ tag.tag.description }}</span
+                          >
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="w-100 pt-2">
+                          <router-link
+                            :to="`produtor/${grower.favorite_user.id}`"
+                            class="btn btn-block border-info text-center"
+                            >Ver detalhes</router-link
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <b-pagination
+                v-model="currentGrowersPage"
+                :per-page="15"
+                @change="changeGrowersPage"
+                align="center"
+                pills
+                :total-rows="totalGrowers"
+              ></b-pagination>
+            </div>
           </b-tab>
           <b-tab title="Interesses">
             <b-card-text
@@ -66,10 +180,24 @@
 
 <script>
 import Page from "@/components/Page";
+import { getApiUrl } from "@/common/api";
 
 export default {
   components: {
-    Page
+    Page,
+  },
+
+  data() {
+    return {
+      growers: null,
+      currentGrowersPage: 1,
+      totalGrowers: 0,
+      apiUrl: getApiUrl(),
+    };
+  },
+
+  mounted() {
+    this.getGrowers();
   },
 
   computed: {
@@ -82,6 +210,105 @@ export default {
 
       return user;
     },
+
+    favorites() {
+      const items = this.$store.getters["favorite/items"];
+
+      if (!items && !!this.$root.user) {
+        this.$store.dispatch("favorite/fetchFromApi", {
+          params: {
+            user_id: this.$root.user.id,
+          },
+        });
+
+        this.getGrowers();
+      }
+
+      return items;
+    },
+  },
+
+  methods: {
+    changeGrowersPage(newPage) {
+      console.log("b");
+      this.currentGrowersPage = newPage;
+      this.getGrowers();
+    },
+
+    getGrowers() {
+      if(!this.$root.user){
+        return null
+      }
+
+      this.activeTab = "growers";
+
+      this.$store
+        .dispatch("favorite/fetchPerPage", {
+          params: {
+            paginated: true,
+            page: this.currentGrowersPage,
+            user_id: this.$root.user.id,
+            with_address: true,
+            with_categories: true,
+          },
+        })
+        .then((response) => {
+          if (response.data) {
+            this.totalGrowers = response.data.total;
+            this.growers = response.data;
+          }
+        });
+    },
+
+    removeFavorite(grower_id) {
+      const favorite = this.favorites.find((favorite) => {
+        return favorite.favorite_user_id == grower_id;
+      });
+
+      this.$store.dispatch("favorite/delete", { id: favorite.id }).then(() => {
+        this.getGrowers();
+      });
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.item-text {
+  flex: 1;
+}
+
+.item-image {
+  background-color: #ccc;
+  display: block;
+  height: 200px;
+  width: 100%;
+  background-size: cover !important;
+  background-color: #ccc !important;
+  background-position: center !important;
+
+  // Small devices (landscape phones, 576px and up)
+  @media (min-width: 576px) {
+    height: 90px;
+    width: 90px;
+  }
+
+  // Medium devices (tablets, 768px and up)
+  @media (min-width: 768px) {
+    height: 75px;
+    width: 75px;
+  }
+
+  // Large devices (desktops, 992px and up)
+  @media (min-width: 992px) {
+    height: 100px;
+    width: 100px;
+  }
+
+  // Extra large devices (large desktops, 1200px and up)
+  @media (min-width: 1200px) {
+    height: 100px;
+    width: 100px;
+  }
+}
+</style>

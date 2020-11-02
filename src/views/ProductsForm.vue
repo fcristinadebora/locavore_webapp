@@ -57,7 +57,7 @@
               <label for="">Tags</label>
               <input type="text" class="form-control" readonly v-if="!tags" value="Carregando..." />
 
-              <multiselect v-if="tags" v-model="form.tags" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="description" track-by="id" :options="tags" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+              <multiselect v-if="tags" v-model="form.tags" tag-placeholder="Adicionar nova tag" placeholder="Buscar ou adicionar tag" label="description" track-by="id" :options="tags" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
             </div>
           </div>
         </div>

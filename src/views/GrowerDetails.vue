@@ -4,9 +4,9 @@
       <div class="w-100">
         <h1 class="h4 w-100 text-left my-3">
           Detalhes do produtor
-          <router-link to="/busca" class="btn btn-info btn-sm mr-2 float-right">
+          <a @click="$router.go(-1)" class="btn btn-info btn-sm mr-2 float-right">
             <i class="fa fa-arrow-circle-left"></i> Voltar
-          </router-link>
+          </a>
           <hr />
         </h1>
 

@@ -8,7 +8,7 @@ import VueRouter from 'vue-router'
 import VueSweetalert2 from 'vue-sweetalert2'
 import wysiwyg from "vue-wysiwyg"
 import Multiselect from 'vue-multiselect'
-
+import VueMask from 'v-mask'
  
 import 'sweetalert2/dist/sweetalert2.min.css'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -18,6 +18,7 @@ import "vue-multiselect/dist/vue-multiselect.min.css"
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
 Vue.use(VueSweetalert2)
+Vue.use(VueMask)
 Vue.use(wysiwyg, {
   hideModules: {
     "image": true,

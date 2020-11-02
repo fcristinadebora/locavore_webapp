@@ -6,6 +6,7 @@ import Home from '@/views/Home'
 import Registration from '@/views/Registration'
 import Interests from '@/views/Interests'
 import Addresses from '@/views/Addresses'
+import AddressesForm from '@/views/AddressesForm'
 import Profile from '@/views/Profile'
 import Products from '@/views/Products'
 import ProductsForm from '@/views/ProductsForm'
@@ -52,6 +53,18 @@ const router = new Router({
       name: 'Addresses',
       component: Addresses,
       meta: { title: `${appTitle} - Meus Endereços` }
+    },
+    {
+      path: '/enderecos/cadastro',
+      name: 'AddressesFormCreate',
+      component: AddressesForm,
+      meta: { title: `${appTitle} - Meus Endereços - Cadastro` }
+    },
+    {
+      path: '/enderecos/editar/:id',
+      name: 'AddressesFormUpdate',
+      component: AddressesForm,
+      meta: { title: `${appTitle} - Meus Endereços - Editar` }
     },
     {
       path: '/perfil',

@@ -1,15 +1,15 @@
 <template>
   <div id="container-fluid">
-    <div id="locationPickerContainer"></div>
+    <div id="locationPickerContainerAddress"></div>
   </div>
 </template>
 
 <script>
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import Lmap from "leaflet";
 
 export default {
-  name: "Map",
+  name: "Map2",
   data() {
     return {
       center: null,
@@ -30,27 +30,27 @@ export default {
 
   methods: {
     setupLeafletMap: function () {
-      const mapDiv = L.map("locationPickerContainer").setView(this.center, 20);
-      L.tileLayer(
+      const addrMapDiv = Lmap.map("locationPickerContainerAddress").setView(this.center, 20);
+      Lmap.tileLayer(
         "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=sk.eyJ1IjoiZGFvcmFoZWluIiwiYSI6ImNrZ3h1YXp5dTA0bmIycmswMWZsY3AwcTMifQ.B10yLUXLOS3SvHJAeifQjg",
         {
           id: "mapbox/streets-v11",
           accessToken:
             "sk.eyJ1IjoiZGFvcmFoZWluIiwiYSI6ImNrZ3h1YXp5dTA0bmIycmswMWZsY3AwcTMifQ.B10yLUXLOS3SvHJAeifQjg",
         }
-      ).addTo(mapDiv);
+      ).addTo(addrMapDiv);
 
-      var myIcon = L.icon(this.icon);
+      var myIcon = Lmap.icon(this.icon);
 
-      var marker = L.marker(this.center, { icon: myIcon })
-        .addTo(mapDiv)
+      var addrMarker = Lmap.marker(this.center, { icon: myIcon })
+        .addTo(addrMapDiv)
         .bindPopup("Você está aqui")
         .openPopup();
 
-      mapDiv.on("click", (e) => {
-        var newLatLng = new L.LatLng(e.latlng.lat, e.latlng.lng);
-        marker.setLatLng(newLatLng); 
-        mapDiv.panTo(newLatLng);
+      addrMapDiv.on("click", (e) => {
+        var newLatLng = new Lmap.LatLng(e.latlng.lat, e.latlng.lng);
+        addrMarker.setLatLng(newLatLng); 
+        addrMapDiv.panTo(newLatLng);
         this.center = [e.latlng.lat, e.latlng.lng] 
         this.emitLocation()
       });
@@ -68,7 +68,7 @@ export default {
           this.setupLeafletMap()
         },
         (error) => {
-          this.$swal.fire({
+          this.$swaLmap.fire({
             title: "Autorizar geolocalização",
             text:
               "Por favor, autorize o serviço de geolocalização para otimizar sua busca!",
@@ -94,7 +94,7 @@ export default {
 </script>
 
 <style scoped>
-#locationPickerContainer {
+#locationPickerContainerAddress {
   width: 100%;
   height: 55vh;
 }

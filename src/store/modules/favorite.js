@@ -45,6 +45,10 @@ export default {
       } catch (error) {
         throw new Error(error)
       }
+    },
+
+    fetchPerPage (state, {params}) {
+      return api.get('favorites', {params:params})
     }
   },
 

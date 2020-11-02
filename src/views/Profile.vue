@@ -129,7 +129,7 @@
                 </span>
               </div>
 
-              <multiselect v-if="editing" v-model="form.tags" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="description" track-by="id" :options="availableTags" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+              <multiselect v-if="editing" v-model="form.tags" tag-placeholder="Adicionar nova tag" placeholder="Buscar ou adicionar tag" label="description" track-by="id" :options="availableTags" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
             </div>
 
             <div class="form-group col-12">
@@ -162,6 +162,7 @@
 import Page from "@/components/Page";
 import FileUpload from "@/components/FileUpload";
 import { getApiUrl } from "@/common/api";
+
 export default {
   components: {
     Page,
