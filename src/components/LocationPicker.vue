@@ -1,7 +1,6 @@
 <template>
-  <div id="container">
-
-    <div id="mapContainer"></div>
+  <div id="container-fluid">
+    <div id="locationPickerContainer"></div>
   </div>
 </template>
 
@@ -31,7 +30,7 @@ export default {
 
   methods: {
     setupLeafletMap: function () {
-      const mapDiv = L.map("mapContainer").setView(this.center, 25);
+      const mapDiv = L.map("locationPickerContainer").setView(this.center, 20);
       L.tileLayer(
         "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=sk.eyJ1IjoiZGFvcmFoZWluIiwiYSI6ImNrZ3h1YXp5dTA0bmIycmswMWZsY3AwcTMifQ.B10yLUXLOS3SvHJAeifQjg",
         {
@@ -77,7 +76,7 @@ export default {
           });
           
           console.log(error.message)
-          this.center = [-27.233011,-52.028298]
+          this.center = [-27.232240,-52.022991]
 
           this.setupLeafletMap()
         }
@@ -90,12 +89,13 @@ export default {
         long: this.center[1]
       })
     }
+    
   }
 };
 </script>
 
 <style scoped>
-#mapContainer {
+#locationPickerContainer {
   width: 100%;
   height: 55vh;
 }

@@ -1,32 +1,24 @@
 <template>
   <page>
     <span slot="content">
-      <h1 class="h4 w-100 text-center my-3">Resultados da busca</h1>
+      <h1 class="h4 w-100 text-center my-3">Resultados da busca - Mapa de {{ $route.type == 'produtos' ? 'produtos' : 'produtores' }}</h1>
 
       <b-card no-body>
         <b-tabs pills card fill active-nav-item-class="bg-gradient">
           <b-tab title="Produtos" @click="activeTab = 'products'" active>
             <div class="row">
               <div class="col-12">
-                <button class="btn bg-gradient btn-block">
+                <router-link to="/mapa/produtos" class="btn bg-gradient btn-block">
                   <i class="fa fa-location-arrow"></i> Ver no mapa
-                </button>
+                </router-link>
               </div>
-
-              <div class="col-12 pt-2" v-if="!products">
-                <div class="card col-12">
-                  <div class="card-body text-center">
-                    <span v-if="products == null">
-                      <i class="fa fa-pulse fa-spinner"></i> Carregando
-                    </span>
-                    <span v-if="products == false">
-                      Nenhum item localizado
-                    </span>
-                  </div>
-                </div>
-              </div>
-
               <div class="col-12">
+                <div class="w-100 text-center py-3" v-if="products == null">
+                  <i class="fa fa-pulse fa-spinner"></i> Carregando
+                </div>
+                <div class="w-100 text-center py-3" v-if="products && !products.data.length">
+                  Nenhum item localizado
+                </div>
                 <div class="row" v-if="products && products.data">
                   <div
                     class="col-12 col-lg-12 col-xl-6 py-3"
@@ -126,32 +118,28 @@
                     </div>
                   </div>
                 </div>
+                <div class="w-100">
+                  <b-pagination v-model="currentProductsPage" :per-page="15" @change="changeProductsPage" align="center" pills :total-rows="totalProducts"></b-pagination>
+                </div>
               </div>
-              
+
             </div>
           </b-tab>
           <b-tab title="Produtores" @click="getGrowers()">
             <div class="row">
               <div class="col-12">
-                <button class="btn bg-gradient btn-block">
+                <router-link to="/mapa/produtores" class="btn bg-gradient btn-block">
                   <i class="fa fa-location-arrow"></i> Ver no mapa
-                </button>
-              </div>
-
-              <div class="col-12 pt-2" v-if="!growers">
-                <div class="card col-12">
-                  <div class="card-body text-center">
-                    <span v-if="growers == null">
-                      <i class="fa fa-pulse fa-spinner"></i> Carregando
-                    </span>
-                    <span v-if="growers == false">
-                      Nenhum item localizado
-                    </span>
-                  </div>
-                </div>
+                </router-link>
               </div>
 
               <div class="col-12">
+                <div class="w-100 text-center py-3" v-if="products == null">
+                  <i class="fa fa-pulse fa-spinner"></i> Carregando
+                </div>
+                <div class="w-100 text-center py-3" v-if="products && !products.data.length">
+                  Nenhum item localizado
+                </div>
                 <div class="row" v-if="growers && growers.data">
                   <div
                     class="col-12 col-lg-12 col-xl-6 py-3"
@@ -246,6 +234,9 @@
                     </div>
                   </div>
                 </div>
+                <div class="w-100">
+                  <b-pagination v-model="currentGrowersPage" :per-page="15" @change="changeGrowersPage" align="center" pills :total-rows="totalGrowers"></b-pagination>
+                </div>
               </div>
               
             </div>
@@ -265,7 +256,9 @@ export default {
   data() {
     return {
       currentProductsPage: 1,
+      totalProducts: 0,
       currentGrowersPage: 1,
+      totalGrowers: 0,
       activeTab: "products",
       apiUrl: getApiUrl(),
     };
@@ -318,6 +311,11 @@ export default {
       }
     },
 
+    changeGrowersPage (newPage) {
+      this.currentGrowersPage = newPage
+      this.getGrowers()
+    },
+
     getGrowers() {
       this.activeTab = "growers";
       var params = {};
@@ -337,6 +335,7 @@ export default {
       params = {
         ...params,
         search_string: this.$root.searchForm.search,
+        page: this.currentGrowersPage,
         order_by: "distance",
       };
 
@@ -344,11 +343,21 @@ export default {
         .dispatch("grower/get", {
           params: params,
         })
+        .then(response => {
+          if(response.data){
+            this.totalGrowers = response.data.total
+          }
+        })
         .finally(() => {
           if (this.$route.name != "SearchResult") {
             this.$router.push("/busca");
           }
         })
+    },
+
+    changeProductsPage (newPage) {
+      this.currentProductsPage = newPage
+      this.getProducts()
     },
 
     getProducts() {
@@ -370,12 +379,18 @@ export default {
       params = {
         ...params,
         search_string: this.$root.searchForm.search,
+        page: this.currentProductsPage,
         order_by: "distance",
       }
 
       this.$store
         .dispatch("product/get", {
           params: params,
+        })
+        .then(response => {
+          if(response.data){
+            this.totalProducts = response.data.total
+          }
         })
         .finally(() => {
         })

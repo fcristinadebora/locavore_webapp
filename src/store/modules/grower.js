@@ -18,12 +18,8 @@ export default {
       try {
         const response = await api.get('growers', { params: params }) 
         
-        if(response.data.data.length == 0){
-          commit('setItems', false)  
-        }else{
-          commit('setItems', response.data)
-        }
-
+        commit('setItems', response.data)
+      
         return response
       } catch (error) {
         console.log(error)

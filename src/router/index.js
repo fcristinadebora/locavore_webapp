@@ -14,6 +14,7 @@ import GrowerImages from '@/views/GrowerImages'
 import SearchResult from '@/views/SearchResult'
 import ProductDetails from '@/views/ProductDetails'
 import GrowerDetails from '@/views/GrowerDetails'
+import Maps from '@/views/Maps'
 
 Vue.use(Router)
 
@@ -105,6 +106,12 @@ const router = new Router({
       name: 'GrowerDetails',
       component: GrowerDetails,
       meta: { title: `${appTitle} - Detalhes do produtor` }
+    },
+    {
+      path: '/mapa/:type',
+      name: 'Maps',
+      component: Maps,
+      meta: { title: `${appTitle} - Resultados da busca - Mapa` }
     }
   ]
 })
