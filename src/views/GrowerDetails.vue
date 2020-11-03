@@ -95,7 +95,7 @@
                   <a v-if="contact.type == 'email'" target="_blank" :href="`mailto:${contact.value}`">
                     <i class="far fa-envelope text-primary"></i>&nbsp;{{ contact.value }}
                   </a>
-                  <a v-if="contact.type == 'others'">
+                  <a v-if="contact.type == 'other'">
                     <i class="far fa-address-book text-secondary"></i>&nbsp;{{ contact.value }}
                   </a>                  
                 </div>

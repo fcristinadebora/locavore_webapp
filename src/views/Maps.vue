@@ -1,7 +1,7 @@
 <template>
   <page>
     <span slot="content">
-      <h1 class="h4 w-100 text-center my-3">Resultados da busca</h1>
+      <h1 class="h4 w-100 text-center my-3">Resultados da busca - Mapa de {{ $route.type == 'produtos' ? 'produtos' : 'produtores' }}</h1>
 
       <div id="mapContainer"></div>
     </span>

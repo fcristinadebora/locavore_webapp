@@ -90,6 +90,19 @@
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
+    <div class="col-12 pt-3" v-if="user && !hasAddress">
+      <div class="alert alert-warning">
+        <strong>
+          <i class="fa fa-exclamation"></i> Atenção!
+        </strong>&nbsp;
+        <span v-if="!user.is_grower">
+         Cadastre ao menos um endereço para resultados mais precisos. <router-link to="/enderecos">Clique aqui</router-link> para acessar.
+        </span>
+        <span v-if="user.is_grower">
+         Cadastre ao menos um endereço para aparecer nas buscas. <router-link to="/enderecos">Clique aqui</router-link> para acessar.
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -105,6 +118,17 @@ export default {
     user() {
       return this.$root.user;
     },
+
+    hasAddress() {
+      const value = this.$store.getters["address/hasAddress"];
+
+      if (value === null && this.user) {
+        this.$store.dispatch("address/checkHasAddress", { params: { user_id: this.user.id }});
+      }
+
+      return value;
+    },
+
   },
 
   data() {

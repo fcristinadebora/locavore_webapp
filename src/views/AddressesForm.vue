@@ -267,6 +267,8 @@ export default {
           icon: "success",
         })
 
+        this.$store.dispatch("address/checkHasAddress", { params: { user_id: this.$root.user.id }});
+
         this.$router.push('/enderecos')
       })
       .catch(error => {

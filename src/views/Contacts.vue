@@ -6,12 +6,17 @@
       >
         <h1 class="h4">Meus endereços - Contatos</h1>
 
-        <router-link
-          :to="`/enderecos/${$route.addressId}/contatos/cadastro`"
-          class="btn bg-gradient btn-sm text-white"
-        >
-          <i class="fa fa-plus"></i> Novo
-        </router-link>
+        <span>
+          <router-link to="/enderecos" class="btn btn-info btn-sm mr-2">
+            <i class="fa fa-arrow-circle-left"></i> Voltar
+          </router-link>
+          <router-link
+            :to="`/enderecos/${addressId}/contatos/cadastro`"
+            class="btn bg-gradient btn-sm text-white"
+          >
+            <i class="fa fa-plus"></i> Novo
+          </router-link>
+        </span>
       </div>
 
       <div
@@ -32,24 +37,27 @@
         class="w-100"
         v-if="user && items && items.data && items.data.length > 0"
       >
-        <div class="card mb-3" v-for="(addr, index) in items.data" :key="index">
+        <div class="card mb-3" v-for="(contact, index) in items.data" :key="index">
           <div class="card-body d-flex justify-content-between">
             <div>
-              <b>{{ addr.name }}</b
-              ><br />
-              {{ addr.street }}, {{ addr.number ? addr.number : "Sem número" }},
-              {{ addr.complement ? `${addr.complement}, ` : null }}{{ addr.district}}<br>
-              {{ addr.city }}, {{ addr.state }}, {{ addr.postal_code }}.
+              <span class="mr-3">
+                <strong>Tipo: </strong>
+                <span v-if="contact.type == 'whatsapp'">WhatsApp</span>
+                <span v-if="contact.type == 'phone'">Telefone</span>
+                <span v-if="contact.type == 'email'">E-mail</span>
+                <span v-if="contact.type == 'other'">Outros</span>
+              </span>
+              <span>
+                | 
+                <strong class="ml-3">Valor:</strong> {{ contact.value }}
+              </span>
             </div>
-            <div class="card-buttons">
-              <button class="btn btn-danger text-extra-sm card-buttons my-1" type="button" @click="deleteItem(addr.id)">
+            <div>
+              <button class="btn btn-danger text-extra-sm card-buttons mx-1" type="button" @click="deleteItem(contact.id)">
                 <i class="fa fa-trash"></i>
               </button>
-              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/enderecos/${$route.addressId}/contatos/editar/${addr.id}`">
+              <router-link class="btn btn-warning text-extra-sm card-buttons mx-1" :to="`/enderecos/${addressId}/contatos/editar/${contact.id}`">
                 <i class="fa fa-edit"></i>
-              </router-link>
-              <router-link class="btn btn-info text-extra-sm card-buttons my-1" :to="`/enderecos/${$route.addressId}/contatos`">
-                <i class="far fa-contact-card"></i>
               </router-link>
             </div>
           </div>
@@ -71,6 +79,7 @@ export default {
       currentPage: 1,
       address: null,
       items: null,
+      addressId: this.$route.params.addressId
     };
   },
 
@@ -90,7 +99,7 @@ export default {
 
   methods: {
     getAddress(){
-      this.$store.dispatch('address/getById', { id:this.$route.addressId })
+      this.$store.dispatch('address/getById', { id:this.addressId })
       .then((response) => {
         this.address = response.data
         this.form = {
@@ -123,10 +132,10 @@ export default {
 
     getItems() {
       this.$store
-        .dispatch("address/get", {
+        .dispatch("contact/get", {
           params: {
             page: this.currentPage,
-            user_id: this.$root.user ? this.$root.user.id : null
+            address_id: this.addressId
           }
         })
         .then((response) => {
@@ -149,7 +158,7 @@ export default {
         confirmButtonText: 'Excluir'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.$store.dispatch('address/delete', {id: id})
+          this.$store.dispatch('contact/delete', {id: id})
           .then(() => {
             this.$swal.fire({
               title: "Ok!",

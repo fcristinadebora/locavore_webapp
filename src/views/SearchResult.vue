@@ -1,7 +1,7 @@
 <template>
   <page>
     <span slot="content">
-      <h1 class="h4 w-100 text-center my-3">Resultados da busca - Mapa de {{ $route.type == 'produtos' ? 'produtos' : 'produtores' }}</h1>
+      <h1 class="h4 w-100 text-center my-3">Resultados da busca</h1>
 
       <b-card no-body>
         <b-tabs pills card fill active-nav-item-class="bg-gradient">
@@ -30,7 +30,7 @@
                         <div class="col-12">
                           <div class="row d-flex flex-row">
                             <div
-                              class="item-image d-flex align-items-center rounded"
+                              class="item-image d-flex align-items-center rounded justify-content-center"
                               :style="
                                 product.images.length
                                   ? 'background: url(' +
@@ -151,9 +151,9 @@
                         <div class="col-12">
                           <div class="row d-flex flex-row">
                             <div
-                              class="item-image d-flex align-items-center rounded"
+                              class="item-image d-flex align-items-center rounded  rounded justify-content-center"
                               :style="
-                                grower.profile_file_path.length
+                                grower.profile_file_path
                                   ? 'background: url(' +
                                     apiUrl +
                                     grower.profile_file_path +
@@ -164,7 +164,7 @@
                             >
                               <i
                                 class="fa fa-image"
-                                v-if="!grower.profile_file_path.length"
+                                v-if="!grower.profile_file_path"
                               ></i>
                             </div>
                             <div
