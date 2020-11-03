@@ -1,7 +1,12 @@
 <template>
   <page>
     <span slot="content">
-      <h1 class="h4 w-100 text-center my-3">Resultados da busca - Mapa de {{ $route.type == 'produtos' ? 'produtos' : 'produtores' }}</h1>
+      <h1 class="h4 w-100 text-left my-3">
+        Resultados da busca - Mapa de {{ $route.type == 'produtos' ? 'produtos' : 'produtores' }}
+        <router-link to="/enderecos" class="btn btn-info btn-sm mr-2 float-right">
+          <i class="fa fa-arrow-circle-left"></i> Voltar
+        </router-link>
+      </h1>
 
       <div id="mapContainer"></div>
     </span>
