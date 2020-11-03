@@ -35,22 +35,32 @@
         <div class="card mb-3" v-for="(addr, index) in items.data" :key="index">
           <div class="card-body d-flex justify-content-between">
             <div>
+              <span class="badge bg-gradient mr-2" v-if="addr.is_main">
+                Principal
+              </span>
               <b>{{ addr.name }}</b
               ><br />
               {{ addr.street }}, {{ addr.number ? addr.number : "Sem número" }},
               {{ addr.complement ? `${addr.complement}, ` : null }}{{ addr.district}}<br>
               {{ addr.city }}, {{ addr.state }}, {{ addr.postal_code }}.
             </div>
-            <div class="card-buttons">
-              <button class="btn btn-danger text-extra-sm card-buttons my-1" type="button" @click="deleteItem(addr.id)">
-                <i class="fa fa-trash"></i>
-              </button>
-              <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/enderecos/editar/${addr.id}`">
-                <i class="fa fa-edit"></i>
-              </router-link>
-              <router-link class="btn btn-info text-extra-sm card-buttons my-1" :to="`/enderecos/${addr.id}/contatos`">
-                <i class="far fa-address-book"></i>
-              </router-link>
+            <div class="d-flex justify-content-between">
+              <div class="card-buttons">
+                <button class="btn btn-danger text-extra-sm card-buttons my-1" type="button" @click="deleteItem(addr.id)">
+                  <i class="fa fa-trash"></i>
+                </button>
+                <router-link class="btn btn-warning text-extra-sm card-buttons my-1" :to="`/enderecos/editar/${addr.id}`">
+                  <i class="fa fa-edit"></i>
+                </router-link>
+              </div>
+              <div class="card-buttons ml-1">
+                <router-link class="btn btn-info text-extra-sm card-buttons my-1" :to="`/enderecos/${addr.id}/contatos`">
+                  <i class="far fa-address-book"></i>
+                </router-link>
+                <button class="btn btn-success text-extra-sm card-buttons my-1" @click="setMain(addr.id)">
+                  <i class="fa fa-thumbtack"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -137,8 +147,30 @@ export default {
             console.error('falha ao excluir item', error)
           })
         }
+      })      
+    },
+
+    setMain (id) {
+      this.$store.dispatch('address/setMain', {id: id})
+      .then(() => {
+        this.$swal.fire({
+          title: "Ok!",
+          text: "Item atualizado!",
+          icon: "success",
+        })
+        this.items = null
+        this.currentPage = 1
+        this.getItems()
       })
-      
+      .catch((error) => {
+        this.$swal.fire({
+          title: "Oops!",
+          text: "Falha ao excluir item",
+          icon: "error",
+        })
+
+        console.error('falha ao atualizar item', error)
+      })
     }
   },
 };

@@ -44,6 +44,10 @@ export default {
       return api.put(`addresses/${id}`, { ...data })
     },
 
+    setMain (commit, { id, data }) {
+      return api.put(`addresses/${id}/set-main`, { ...data })
+    },
+
     delete (commit, { id }) {
       return api.delete(`addresses/${id}`)
     }
