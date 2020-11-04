@@ -18,6 +18,7 @@ import SearchResult from '@/views/SearchResult'
 import ProductDetails from '@/views/ProductDetails'
 import GrowerDetails from '@/views/GrowerDetails'
 import Maps from '@/views/Maps'
+import FeedbackForm from '@/views/FeedbackForm'
 
 Vue.use(Router)
 
@@ -145,6 +146,12 @@ const router = new Router({
       name: 'Maps',
       component: Maps,
       meta: { title: `${appTitle} - Resultados da busca - Mapa` }
+    },
+    {
+      path: '/feedback',
+      name: 'FeedbackForm',
+      component: FeedbackForm,
+      meta: { title: `${appTitle} - Feedback` }
     }
   ]
 })

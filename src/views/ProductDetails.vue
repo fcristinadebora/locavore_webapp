@@ -53,6 +53,7 @@
           </div>
         </div>
       </div>
+      <rating type="Produto"></rating>
     </span>
   </page>
 </template>
@@ -60,10 +61,11 @@
 <script>
 import Page from "@/components/Page"
 import Gallery from "@/components/Gallery"
+import Rating from "@/components/Rating"
 import { getApiUrl } from "@/common/api"
 
 export default {
-  components: { Page, Gallery },
+  components: { Page, Gallery, Rating },
 
   data () {
     return {

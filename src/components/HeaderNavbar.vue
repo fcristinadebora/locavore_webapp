@@ -24,14 +24,14 @@
         </b-nav-item>
 
         <b-nav-item
-          class="btn btn-block border-color1 p-0 link-white"
+          class="btn btn-block p-0 bg-darker link-white"
           to="/login"
           v-if="!user"
         >
           Login
         </b-nav-item>
         <b-nav-item
-          class="btn btn-block border-color1 p-0 link-white p-0"
+          class="btn btn-block p-0 bg-darker link-white p-0"
           to="/cadastro"
           v-if="!user"
         >
@@ -80,7 +80,7 @@
         >
           Meus Interesses
         </b-nav-item>
-
+        
         <b-nav-item
           @click="$root.logout()"
           class="btn btn-block bg-darker p-0 link-white"
@@ -88,6 +88,16 @@
         >
           <i class="fas fa-sign-out-alt"></i>Sair
         </b-nav-item>
+
+        <hr>
+
+        <b-nav-item
+          class="btn btn-block bg-darker p-0 link-white"
+          to="/feedback"
+        >
+          <i class="far fa-comments"></i> Feedback
+        </b-nav-item>
+        
       </b-navbar-nav>
     </b-collapse>
     <div class="col-12 pt-3" v-if="user && !hasAddress">

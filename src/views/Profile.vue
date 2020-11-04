@@ -154,6 +154,14 @@
         </div>
       </div>
       </form>
+      <div class="card mt-5">
+        <div class="card-body">
+          <button v-b-modal.change-password-modal class="btn btn-info" type="button">Alterar senha</button>
+          <button v-b-modal.delete-account-modal class="btn btn-info ml-3" type="button">Excluir conta</button>
+        </div>
+      </div>
+      <change-password-modal></change-password-modal>
+      <delete-account-modal></delete-account-modal>
     </span>
   </page>
 </template>
@@ -162,11 +170,15 @@
 import Page from "@/components/Page";
 import FileUpload from "@/components/FileUpload";
 import { getApiUrl } from "@/common/api";
+import ChangePasswordModal from "@/components/ChangePasswordModal";
+import DeleteAccountModal from "@/components/DeleteAccountModal";
 
 export default {
   components: {
     Page,
-    FileUpload
+    FileUpload,
+    ChangePasswordModal,
+    DeleteAccountModal
   },
 
   data() {
@@ -242,6 +254,8 @@ export default {
       this.$store.dispatch("user/getProfile")
       .then(response => {
         this.profile = response.data.profile
+        this.profile.categories = []
+        this.profile.tags = []
         if(this.profile.is_grower){
           this.getGrowerTagsAndCategories()
         }
