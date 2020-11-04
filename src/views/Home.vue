@@ -94,7 +94,8 @@
                         <div class="w-100 text-center text-sm-left">
                           <span
                             class="badge mr-2 bg-color2"
-                            v-for="(tag, index) in grower.favorite_user.identification_tags"
+                            v-for="(tag, index) in grower.favorite_user
+                              .identification_tags"
                             :key="index"
                             >#{{ tag.tag.description }}</span
                           >
@@ -125,12 +126,131 @@
               ></b-pagination>
             </div>
           </b-tab>
-          <b-tab title="Interesses">
-            <b-card-text
+          <b-tab title="Interesses" @click="getInterestCompatible()">
+            <b-card-text v-if="!totalInterests"
               >Você ainda não informou nenhum interesse.
-              <a href="">Clique aqui</a> para gerenciar seus interesses e ver
-              resultados compatíveis em sua tela inicial</b-card-text
+              <router-link to="/interesses">Clique aqui</router-link> para
+              gerenciar seus interesses e ver resultados compatíveis em sua tela
+              inicial</b-card-text
             >
+
+            <div class="col-12" v-if="totalInterests > 0">
+              <div class="row">
+                <div class="col-12 font-weight-bold">
+                  Produtos
+                </div>
+
+                <div class="col-12" v-if="compatibleInterests.products == null">
+                  <i class="fa fa-pulse fa-spinner">Carregando</i>
+                </div>
+
+                <div class="col-12" v-if="compatibleInterests.products != null && compatibleInterests.products.length  == 0">
+                  Nenhum produto compatível com seus interesses foi localizado <span v-if="hasAddress">na mesma cidade do seu endereço principal.</span>
+                </div>
+
+                <div class="col-12" v-if="compatibleInterests.products != null && compatibleInterests.products.length > 0">
+                  <div class="row">
+                     <div
+                    class="col-12 col-lg-12 col-xl-6 py-3"
+                    v-for="(product, index) in compatibleInterests.products"
+                    :key="index"
+                  >
+                    <div class="card result-item">
+                      <div class="card-body">
+                        <div class="col-12">
+                          <div class="row d-flex flex-row">
+                            <div
+                              class="item-image d-flex align-items-center rounded justify-content-center"
+                              :style="
+                                product.images.length
+                                  ? 'background: url(' +
+                                    apiUrl +
+                                    product.images[0].image.file_path +
+                                    product.images[0].image.file_name +
+                                    ')'
+                                  : null
+                              "
+                            >
+                              <i
+                                class="fa fa-image"
+                                v-if="!product.images.length"
+                              ></i>
+                            </div>
+                            <div
+                              class="item-text ml-sm-3 d-flex flex-column justify-content-between"
+                            >
+                              <div
+                                class="w-100 d-block d-sm-flex mt-3 my-sm-0 justify-content-between"
+                              >
+                                <div
+                                  class="font-weight-bold text-center text-sm-left"
+                                >
+                                  <span
+                                    class="badge bg-gradient mb-1 w-100 w-sm-auto"
+                                    >{{
+                                      product.product_category.description
+                                    }}</span
+                                  >
+                                  {{ product.name }}
+                                </div>
+                                <div
+                                  class="text-color2 text-center w-100 w-sm-auto"
+                                >
+                                  {{ product.price | toReais }}
+                                </div>
+                              </div>
+                              <div
+                                class="w-100 my-1 my-md-0 text-center text-sm-left text-muted"
+                              >
+                                {{ product.grower.name }}
+                              </div>
+                              <div
+                                class="w-100 d-block d-sm-flex justify-content-between align-items-end"
+                              >
+                                <div
+                                  class="mr-3 text-sm w-100 w-sm-auto text-center text-sm-left"
+                                >
+                                  <i class="fa fa-map-signs"></i>
+                                  {{ product.street }}, {{ product.district }},
+                                  {{ product.city }}
+                                </div>
+                                <div
+                                  class="item-distance text-center text-sm-right mt-3 mt-sm-0 w-100 w-sm-auto"
+                                >
+                                  <i
+                                    class="fa fa-map-marker-alt text-primary"
+                                  ></i>
+                                  {{
+                                    (product.distance ? product.distance : "-")
+                                      | toKm
+                                  }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row pt-3">
+                            <div class="w-100 text-center text-sm-left">
+                              <span
+                                class="badge mr-2 bg-color2"
+                                v-for="{ tag, index } in product.tags"
+                                :key="index"
+                                >#{{ tag.description }}</span
+                              >
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="w-100 pt-2">
+                              <router-link :to="`produto/${product.id}`" class="btn btn-block border-info text-center">Ver detalhes</router-link>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -193,11 +313,17 @@ export default {
       currentGrowersPage: 1,
       totalGrowers: 0,
       apiUrl: getApiUrl(),
+      totalInterests: 0,
+      compatibleInterests: {
+        products: null,
+        growers: null
+      }
     };
   },
 
   mounted() {
     this.getGrowers();
+    this.getInterests();
   },
 
   computed: {
@@ -226,18 +352,23 @@ export default {
 
       return items;
     },
+
+    hasAddress() {
+      const value = this.$store.getters["address/hasAddress"];
+
+      return value;
+    },
   },
 
   methods: {
     changeGrowersPage(newPage) {
-      console.log("b");
       this.currentGrowersPage = newPage;
       this.getGrowers();
     },
 
     getGrowers() {
-      if(!this.$root.user){
-        return null
+      if (!this.$root.user) {
+        return null;
       }
 
       this.activeTab = "growers";
@@ -267,6 +398,50 @@ export default {
 
       this.$store.dispatch("favorite/delete", { id: favorite.id }).then(() => {
         this.getGrowers();
+      });
+    },
+
+    getInterestCompatible() {
+      if (!this.$root.user) {
+        return null;
+      }
+
+      this.activeTab = "interests";
+
+      this.$store
+        .dispatch("interest/getCompatible", {
+          params: {
+            user_id: this.$root.user.id,
+          },
+        })
+        .then((response) => {
+          this.compatibleInterests = response.data.items
+        })
+        .catch((error) => {
+          this.compatibleInterests = {
+            products: [],
+            growers: []
+          }
+          console.error("error", error);
+        });
+    },
+
+    getInterests() {
+      console.log('interestssss')
+      this.$store
+      .dispatch("interest/get", {
+        params: {
+          user_id: this.$root.user.id,
+        },
+      })
+      .then((response) => {
+        console.log('interests', response)
+        if (response.data) {
+          this.totalInterests = response.data.total;
+        }
+      })
+      .catch(() => {
+        console.log("Falha ao obter tags");
       });
     },
   },

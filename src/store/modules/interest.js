@@ -13,5 +13,8 @@ export default {
     get (state, { params }) {
       return api.get(`interests`, {params: params})
     },
+    getCompatible (state, { params }) {
+      return api.get(`interests/compatible`, {params: params})
+    },
   }
 }

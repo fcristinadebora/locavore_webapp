@@ -34,20 +34,20 @@
       <div class="col-12">
         <div class="row justify-content-center">
           <div class="col-md-4 col-10 p-0 overflow-auto justify-content-center align-items-center d-flex profile-img-bg">
-            <i class="fa fa-pulse fa-spinner" v-if="!profile"></i>
-            <i
-              class="fa fa-user"
-              style="font-size: 50px"
-              v-if="profile && !profileImageUrl"
-            ></i>
-
             <div
-            class="profile-img rounded-circle border-color1 border"
+            class="profile-img rounded-circle border-color1 border d-flex justify-content-center align-items-center"
             :style="
               'background: url(' +
               profileImageUrl +
               ');'
-            "></div>
+            ">
+              <i class="fa fa-pulse fa-spinner" v-if="!profile"></i>
+              <i
+                class="fa fa-user"
+                style="font-size: 50px"
+                v-if="profile && !profileImageUrl"
+              ></i>
+            </div>
           </div>
           <div
             class="col-md-8 pt-4 pl-0 pl-md-4 d-flex align-items-center justify-content-center justify-content-md-start"
