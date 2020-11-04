@@ -33,26 +33,24 @@
 
       <div class="col-12">
         <div class="row justify-content-center">
-          <div
-            class="col-md-2 col-10 p-0 overflow-auto rounded-circle justify-content-center align-items-center d-flex border-color1 border profile-img"
-            :style="
-              'background: url(' +
-              profileImageUrl +
-              '); height:' +
-              profileImageHeightPx +
-              ';'
-            "
-            ref="profileimg"
-          >
+          <div class="col-md-4 col-10 p-0 overflow-auto justify-content-center align-items-center d-flex profile-img-bg">
             <i class="fa fa-pulse fa-spinner" v-if="!profile"></i>
             <i
               class="fa fa-user"
               style="font-size: 50px"
               v-if="profile && !profileImageUrl"
             ></i>
+
+            <div
+            class="profile-img rounded-circle border-color1 border"
+            :style="
+              'background: url(' +
+              profileImageUrl +
+              ');'
+            "></div>
           </div>
           <div
-            class="col-md-10 pt-4 pl-0 pl-md-4 d-flex align-items-center justify-content-center justify-content-md-start"
+            class="col-md-8 pt-4 pl-0 pl-md-4 d-flex align-items-center justify-content-center justify-content-md-start"
             v-if="profile"
           >
             <div v-if="!editing">
@@ -214,22 +212,13 @@ export default {
     },
   },
 
-  created() {
-    window.addEventListener("resize", this.setProfileImageHeight)
-  },
-
   mounted() {
-    this.setProfileImageHeight()
     this.getProfile()
     this.getAvailableTags()
     this.getAvailableCategories()
   },
 
   methods: {
-    setProfileImageHeight() {
-      this.profileImageHeight = this.$refs.profileimg.clientWidth + "px"
-    },
-
     setEditing() {
       this.form = {
         ...this.profile,
@@ -404,5 +393,19 @@ export default {
   background-size: cover !important;
   background-color: #ccc !important;
   background-position: center !important;
+  height: 200px;
+  width: 200px;
+
+  // Small devices (landscape phones, 576px and up)
+  @media (min-width: 576px) {
+    height: 200px;
+    width: 200px;
+  }
+
+  // Medium devices (tablets, 768px and up)
+  @media (min-width: 768px) {
+    height: 250px;
+    width: 250px;
+  }
 }
 </style>
