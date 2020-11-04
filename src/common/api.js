@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const getApiUrl = () => {
-  return 'http://localhost:8000/'
+  return 'http://localhost:8001/'
 }
 
 const getLocalStorageToken = () => {

@@ -3,7 +3,6 @@
     <div class="card-header font-weight-bold">Avaliação</div>
     <div class="card-body">
       <rating-form :type="type"></rating-form>
-
       <rating-items></rating-items>
     </div>
   </div>
