@@ -141,7 +141,7 @@
                 </div>
 
                 <div class="col-12" v-if="compatibleInterests.products == null">
-                  <i class="fa fa-pulse fa-spinner">Carregando</i>
+                  <i class="fa fa-pulse fa-spinner"></i> Carregando
                 </div>
 
                 <div class="col-12" v-if="compatibleInterests.products != null && compatibleInterests.products.length  == 0">
@@ -211,8 +211,8 @@
                                   class="mr-3 text-sm w-100 w-sm-auto text-center text-sm-left"
                                 >
                                   <i class="fa fa-map-signs"></i>
-                                  {{ product.street }}, {{ product.district }},
-                                  {{ product.city }}
+                                  {{ product.grower.addresses[0].street }}, {{ product.grower.addresses[0].district }},
+                                  {{ product.grower.addresses[0].city }}
                                 </div>
                                 <div
                                   class="item-distance text-center text-sm-right mt-3 mt-sm-0 w-100 w-sm-auto"
@@ -221,7 +221,7 @@
                                     class="fa fa-map-marker-alt text-primary"
                                   ></i>
                                   {{
-                                    (product.distance ? product.distance : "-")
+                                    (product.grower.addresses[0].distance !== null ? product.grower.addresses[0].distance : "-")
                                       | toKm
                                   }}
                                 </div>
@@ -246,6 +246,32 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 font-weight-bold">
+                  Produtores
+                </div>
+
+                <div class="col-12" v-if="compatibleInterests.growers == null">
+                  <i class="fa fa-pulse fa-spinner"></i> Carregando
+                </div>
+
+                <div class="col-12" v-if="compatibleInterests.growers != null && compatibleInterests.growers.length  == 0">
+                  Nenhum produto compatível com seus interesses foi localizado <span v-if="hasAddress">na mesma cidade do seu endereço principal.</span>
+                </div>
+
+                <div class="col-12" v-if="compatibleInterests.growers != null && compatibleInterests.growers.length > 0">
+                  <div class="row">
+                     <div
+                    class="col-12 col-lg-12 col-xl-6 py-3"
+                    v-for="(grower, index) in compatibleInterests.growers"
+                    :key="index"
+                  >
+                    <grower-card :grower="grower"></grower-card>
                   </div>
                   </div>
                 </div>
@@ -301,10 +327,12 @@
 <script>
 import Page from "@/components/Page";
 import { getApiUrl } from "@/common/api";
+import GrowerCard from "@/components/GrowerCard";
 
 export default {
   components: {
     Page,
+    GrowerCard
   },
 
   data() {
@@ -322,8 +350,7 @@ export default {
   },
 
   mounted() {
-    this.getGrowers();
-    this.getInterests();
+    
   },
 
   computed: {
@@ -332,7 +359,11 @@ export default {
 
       if (user === null) {
         this.$store.dispatch("user/authenticated");
+      }else{
+        this.getGrowers();
+        this.getInterests();
       }
+
 
       return user;
     },

@@ -38,7 +38,7 @@ Vue.filter('toReais', function (value) {
 })
 
 Vue.filter('toKm', function (value) {
-    if (!value) return ''
+    if (value === null) return ''
     if (isNaN(parseFloat(value))) return value
 
     return value.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 , style: 'decimal' }) + ' Km'

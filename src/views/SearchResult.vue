@@ -146,92 +146,7 @@
                     v-for="(grower, index) in growers.data"
                     :key="index"
                   >
-                    <div class="card result-item">
-                      <div class="card-body">
-                        <div class="col-12">
-                          <div class="row d-flex flex-row">
-                            <div
-                              class="item-image d-flex align-items-center rounded  rounded justify-content-center"
-                              :style="
-                                grower.profile_file_path
-                                  ? 'background: url(' +
-                                    apiUrl +
-                                    grower.profile_file_path +
-                                    grower.profile_file_name +
-                                    ')'
-                                  : null
-                              "
-                            >
-                              <i
-                                class="fa fa-image"
-                                v-if="!grower.profile_file_path"
-                              ></i>
-                            </div>
-                            <div
-                              class="item-text ml-sm-3 d-flex flex-column justify-content-between"
-                            >
-                              <div
-                                class="w-100 d-block d-sm-flex mt-3 my-sm-0 justify-content-between"
-                              >
-                                <div class="font-weight-bold text-center text-sm-left w-100">
-                                  {{ grower.name }}
-                                  <span class="float-right text-danger">
-                                    <i class="fas fa-heart cursor-pointer" v-if="isFavorite(grower.id)" @click="removeFavorite(grower.id)"></i>
-                                    <i class="far fa-heart cursor-pointer" v-if="!isFavorite(grower.id)" @click="addFavorite(grower.id)"></i>
-                                  </span>
-                                </div>
-                              </div>
-                              <div
-                                  class="font-weight-bold text-center text-sm-left" v-if="grower.product_categories.length > 0"
-                                >
-                                  <span class="badge bg-gradient mb-1 w-100 w-sm-auto mr-2"
-                                    v-for="(category, index) in grower.product_categories"
-                                    :key="index">{{
-                                      category.product_category.description
-                                    }}</span>
-                              </div>
-                              <div
-                                class="w-100 d-block d-sm-flex justify-content-between align-items-end"
-                              >
-                                <div
-                                  class="mr-3 text-sm w-100 w-sm-auto text-center text-sm-left"
-                                >
-                                  <i class="fa fa-map-signs"></i>
-                                  {{ grower.street }}, {{ grower.district }},
-                                  {{ grower.city }}
-                                </div>
-                                <div
-                                  class="item-distance text-center text-sm-right mt-3 mt-sm-0 w-100 w-sm-auto"
-                                >
-                                  <i
-                                    class="fa fa-map-marker-alt text-primary"
-                                  ></i>
-                                  {{
-                                    (grower.distance ? grower.distance : "-")
-                                      | toKm
-                                  }}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row pt-3">
-                            <div class="w-100 text-center text-sm-left">
-                              <span
-                                class="badge mr-2 bg-color2"
-                                v-for="(tag, index) in grower.identification_tags"
-                                :key="index"
-                                >#{{ tag.tag.description }}</span
-                              >
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="w-100 pt-2">
-                              <router-link :to="`produtor/${grower.id}`" class="btn btn-block border-info text-center">Ver detalhes</router-link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <grower-card :grower="grower"></grower-card>
                   </div>
                 </div>
                 <div class="w-100">
@@ -249,6 +164,7 @@
 
 <script>
 import Page from "@/components/Page"
+import GrowerCard from "@/components/GrowerCard"
 import { getApiUrl } from "@/common/api"
 import { EventBus } from '@/common/eventBus.js'
 
@@ -266,6 +182,7 @@ export default {
 
   components: {
     Page,
+    GrowerCard
   },
 
   computed: {
@@ -275,21 +192,24 @@ export default {
       return items;
     },
 
-    favorites() {
-      const items = this.$store.getters["favorite/items"];
-
-      if(!items) {
-        this.$store.dispatch("favorite/fetchFromApi", { params: {
-          user_id: this.$root.user.id
-        }})
-      }
-
-      console.log('items', items)
-
-      return items;
-    },
     growers() {
-      const items = this.$store.getters["grower/items"];
+      const items = {...this.$store.getters["grower/items"]};
+
+      if(items && items.data){
+        items.data = items.data.map(grower => {
+          return {
+            ...grower,
+            addresses: [
+              {
+                street: grower.street,
+                district: grower.district,
+                city: grower.city,
+                distance: grower.distance
+              }
+            ]
+          }
+        })
+      }
 
       return items;
     },
@@ -394,33 +314,6 @@ export default {
         })
         .finally(() => {
         })
-    },
-
-    isFavorite(grower_id){
-      if(!this.favorites){
-        return false
-      }
-
-      return this.favorites.some(favorite => {
-        return favorite.favorite_user_id == grower_id
-      })
-    },
-
-    addFavorite (grower_id) {
-      const data = {
-        user_id: this.$root.user.id,
-        favorite_user_id: grower_id
-      }
-
-      this.$store.dispatch('favorite/create', {data: data})
-    },
-
-    removeFavorite (grower_id) {
-      const favorite = this.favorites.find(favorite => {
-        return favorite.favorite_user_id == grower_id
-      })
-
-      this.$store.dispatch('favorite/delete', {id: favorite.id})
     }
   },
 };
