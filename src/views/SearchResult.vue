@@ -91,7 +91,7 @@
                                     class="fa fa-map-marker-alt text-primary"
                                   ></i>
                                   {{
-                                    (product.distance ? product.distance : "-")
+                                    (product.distance !== null ? product.distance : "-")
                                       | toKm
                                   }}
                                 </div>
@@ -245,6 +245,11 @@ export default {
           lat: this.$root.searchForm.local.lat,
           long: this.$root.searchForm.local.long,
         };
+      } else if (this.$root.searchForm.localType == "address") {
+        params = {
+          lat: this.$root.searchForm.local.lat,
+          long: this.$root.searchForm.local.long,
+        };
       } else if (this.$root.searchForm.localType == "city") {
         params = {
           city: this.$root.searchForm.local.city,
@@ -285,6 +290,11 @@ export default {
       var params = {};
 
       if (this.$root.searchForm.localType == "coord") {
+        params = {
+          lat: this.$root.searchForm.local.lat,
+          long: this.$root.searchForm.local.long,
+        };
+      } else if (this.$root.searchForm.localType == "address") {
         params = {
           lat: this.$root.searchForm.local.lat,
           long: this.$root.searchForm.local.long,

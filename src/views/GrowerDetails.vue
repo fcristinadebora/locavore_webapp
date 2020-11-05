@@ -199,14 +199,8 @@ export default {
 
   // Large devices (desktops, 992px and up)
   @media (min-width: 992px) {
-    height: 100px;
-    width: 100px;
-  }
-
-  // Extra large devices (large desktops, 1200px and up)
-  @media (min-width: 1200px) {
-    height: 100px;
-    width: 100px;
+    height: 180px;
+    width: 180px;
   }
 }
 </style>

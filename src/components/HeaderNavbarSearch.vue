@@ -54,6 +54,7 @@
       @shown="resetModal"
     >
       <div class="col-12">
+        <label for="">Selecione uma cidade</label>
         <div class="row form-group">
           <div class="col-sm-5 pr-sm-0">
             <select class="form-control" v-model="location.estado">
@@ -91,8 +92,36 @@
         </div>
       </div>
 
-      <div class="w-100 text-center">Ou</div>
+      <div class="col-12" v-if="user">
+        <label for="">Ou selecione um endereço</label>
+        <div class="row form-group">
+          <div class="col-sm-10 pr-sm-0">
+            <input type="text" value="Carregando..." disabled class="form-control" v-if="!addresses">
+            <input type="text" value="Nenhum endereço cadastrado" disabled class="form-control" v-if="addresses && !addresses.length">
+            <select class="form-control" v-model="location.address" v-if="addresses && addresses.length">
+              <option value="">Selecione um item da lista</option>
+              <option
+                :value="addr"
+                v-for="(addr, index) in addresses"
+                :key="index"
+              >
+                {{ addr.name }} | {{ addr.street }}, {{ addr.number }}...
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-2 px-sm-0">
+            <button
+              class="btn-success btn btn-block"
+              :disabled="!location.address"
+              @click="setLocation('address')"
+            >
+              <i class="fa fa-check"></i> Ok
+            </button>
+          </div>
+        </div>
+      </div>
 
+      <label class="col-12">Ou selecione no mapa abaixo</label>
       <div class="my-2 w-100 text-center">
         <div class="input-group mt-2 mt-md-0 mr-0 pr-md-2 col-12">
           <input
@@ -150,8 +179,10 @@ export default {
       location: {
         cidade: "",
         estado: "",
+        address: "",
         coords: false,
       },
+      addresses: null,
       locationPickerKey: null,
     };
   },
@@ -165,6 +196,14 @@ export default {
       }
 
       return [];
+    },
+
+    user(){
+      if(this.$root.user){
+        this.getAddresses()
+      }
+
+      return this.$root.user
     },
 
     cidades() {
@@ -186,6 +225,10 @@ export default {
 
       if (this.form.localType == "city") {
         return `${this.form.local.city}, ${this.form.local.state}`;
+      }
+
+      if (this.form.localType == "address") {
+        return `Endereço cadastrado: ${this.form.local.name}`;
       }
 
       return "";
@@ -221,7 +264,9 @@ export default {
       this.form.localType = type;
 
       if (type == "coord") {
-        this.form.local = { ...this.location.coords };
+        this.form.local = { ...this.location.coords }
+      } else if (type == "address") {
+        this.form.local = { ...this.location.address }
       } else if (type == "city") {
         this.form.local = {
           city: this.location.cidade.nome,
@@ -234,6 +279,23 @@ export default {
     
     selectLocation(location) {
       this.location.coords = location;
+    },
+
+    getAddresses() {
+      this.$store
+        .dispatch("address/get", {
+          params: {
+            all: true,
+            user_id: this.$root.user ? this.$root.user.id : null
+          }
+        })
+        .then((response) => {
+          this.addresses = response.data
+        })
+        .catch((error) => {
+          this.addresses = [];
+          console.error("Falha ao obter endereços", error);
+        })
     },
   },
 };
