@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <rating type="Produto"></rating>
+      <rating type="Produto" :card="true"></rating>
     </span>
   </page>
 </template>

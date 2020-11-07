@@ -4,7 +4,10 @@
       <div class="w-100">
         <h1 class="h4 w-100 text-left my-3">
           Detalhes do produtor
-          <a @click="$router.go(-1)" class="btn btn-info btn-sm mr-2 float-right">
+          <a
+            @click="$router.go(-1)"
+            class="btn btn-info btn-sm mr-2 float-right"
+          >
             <i class="fa fa-arrow-circle-left"></i> Voltar
           </a>
           <hr />
@@ -17,9 +20,10 @@
           </div>
         </div>
 
-        <div class="card" v-if="grower">
-          <div class="card-body">
-            <div class="w-100 card-text py-3">
+        <b-card no-body v-if="grower">
+          <b-tabs pills card fill active-nav-item-class="bg-gradient">
+            <b-tab title="Detalhes do produtor" active>
+              <div class="w-100 card-text py-3">
               <div
                 class="item-image mr-0 mr-sm-3 mb-3 d-flex align-items-center rounded float-left"
                 :style="
@@ -39,7 +43,7 @@
               </div>
               <div>
                 <h2 class="h5 w-100 text-left">
-                  {{ grower.name }}
+                  {{ grower.name }} <i class="fas fa-heart float-right text-danger"></i>
                 </h2>
                 <strong>Categorias de produtos</strong><br />
                 <span v-if="!grower.product_categories.length">
@@ -57,7 +61,7 @@
                 <span v-html="grower.description"></span>
               </div>
             </div>
-            <hr>
+            <hr />
             <strong>Galeria de imagens</strong><br />
             <gallery class="w-100" :images="images"></gallery>
             <p class="w-100 card-text pt-3">
@@ -75,37 +79,74 @@
             </p>
 
             <div class="w-100">
-            <hr>
-            <strong>Endereço(s)</strong><br /><br />
-            <div class="w-100 mb-3" v-for="(addr, index) in grower.addresses" :key="index">
-              <i class="fa fa-map-marker-alt text-info"></i> <strong>{{ addr.name }}</strong><br>
-              <span>
-              {{ addr.street }}, {{ addr.number ? addr.number : 'Sem número' }}, {{ addr.complement ? `${addr.complement}, ` : null }} {{ addr.district }}, 
-              {{ addr.city }}, {{ addr.state }}, {{ addr.postal_code }}.
-              </span>
+              <hr />
+              <strong>Endereço(s)</strong><br /><br />
+              <div
+                class="w-100 mb-3"
+                v-for="(addr, index) in grower.addresses"
+                :key="index"
+              >
+                <i class="mr-1 fa fa-map-marker-alt text-info"></i>
+                <strong>{{ addr.name }}</strong
+                ><br />
+                <span>
+                  {{ addr.street }},
+                  {{ addr.number ? addr.number : "Sem número" }},
+                  {{ addr.complement ? `${addr.complement}, ` : null }}
+                  {{ addr.district }}, {{ addr.city }}, {{ addr.state }},
+                  {{ addr.postal_code }}.
+                </span>
 
-              <div class="w-100 mt-2 mb-4">
-                <div class="d-block d-sm-inline w-100 w-sm-auto mr-4" v-for="(contact, index) in addr.contacts" :key="index">
-                  <a v-if="contact.type == 'whatsapp'" target="_blank" :href="`https://api.whatsapp.com/send?phone=${contact.value}`">
-                    <i class="fab fa-whatsapp text-success"></i>&nbsp;{{ contact.value }}
-                  </a>
-                  <a v-if="contact.type == 'phone'" target="_blank" :href="`tel:${contact.value}`">
-                    <i class="fa fa-phone-alt text-secondary"></i>&nbsp;{{ contact.value }}
-                  </a>
-                  <a v-if="contact.type == 'email'" target="_blank" :href="`mailto:${contact.value}`">
-                    <i class="far fa-envelope text-primary"></i>&nbsp;{{ contact.value }}
-                  </a>
-                  <a v-if="contact.type == 'other'">
-                    <i class="far fa-address-book text-secondary"></i>&nbsp;{{ contact.value }}
-                  </a>                  
+                <div class="w-100 mt-2 mb-4">
+                  <div
+                    class="d-block d-sm-inline w-100 w-sm-auto mr-4"
+                    v-for="(contact, index) in addr.contacts"
+                    :key="index"
+                  >
+                    <a
+                      v-if="contact.type == 'whatsapp'"
+                      target="_blank"
+                      :href="`https://api.whatsapp.com/send?phone=${contact.value}`"
+                    >
+                      <i class="fab fa-whatsapp text-success"></i>&nbsp;{{
+                        contact.value
+                      }}
+                    </a>
+                    <a
+                      v-if="contact.type == 'phone'"
+                      target="_blank"
+                      :href="`tel:${contact.value}`"
+                    >
+                      <i class="fa fa-phone-alt text-secondary"></i>&nbsp;{{
+                        contact.value
+                      }}
+                    </a>
+                    <a
+                      v-if="contact.type == 'email'"
+                      target="_blank"
+                      :href="`mailto:${contact.value}`"
+                    >
+                      <i class="far fa-envelope text-primary"></i>&nbsp;{{
+                        contact.value
+                      }}
+                    </a>
+                    <a v-if="contact.type == 'other'">
+                      <i class="far fa-address-book text-secondary"></i>&nbsp;{{
+                        contact.value
+                      }}
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-            </div>
-          </div>
-        </div>
+            <rating type="Produtor" :card="false"></rating>
+            </b-tab>
+            <b-tab title="Produtos"> </b-tab>
+          </b-tabs>
+        </b-card>
+
+        
       </div>
-      <rating type="Produtor"></rating>
     </span>
   </page>
 </template>
@@ -141,7 +182,7 @@ export default {
             with_categories: true,
             with_images: true,
             with_grower: true,
-            with_address:true
+            with_address: true,
           },
         })
         .then((response) => {

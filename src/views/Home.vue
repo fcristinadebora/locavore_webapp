@@ -14,6 +14,12 @@
             >
 
             <div class="row" v-if="growers && growers.data">
+              <div class="col-12">
+                <router-link to="/mapa/favoritos" class="btn bg-gradient btn-block">
+                  <i class="fa fa-location-arrow"></i> Ver no mapa
+                </router-link>
+              </div>
+
               <div
                 class="col-12 col-lg-12 col-xl-6 py-3"
                 v-for="(grower, index) in growers.data"
@@ -263,6 +269,7 @@
                 <div class="col-12" v-if="compatibleInterests.growers != null && compatibleInterests.growers.length  == 0">
                   Nenhum produto compatível com seus interesses foi localizado <span v-if="hasAddress">na mesma cidade do seu endereço principal.</span>
                 </div>
+
 
                 <div class="col-12" v-if="compatibleInterests.growers != null && compatibleInterests.growers.length > 0">
                   <div class="row">

@@ -28,14 +28,6 @@ export default {
   mutations: {
     setItems (state, items) {
       state.items = items
-    },
-
-    addItem(state, item) {
-      const items = state.items
-
-      items.push(item)
-      
-      state.items = items
     }
   }
 }

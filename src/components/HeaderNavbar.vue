@@ -68,13 +68,6 @@
         </b-nav-item>
         <b-nav-item
           class="btn btn-block bg-darker p-0 link-white"
-          to="/login"
-          v-if="user"
-        >
-          Produtores Favoritos
-        </b-nav-item>
-        <b-nav-item
-          class="btn btn-block bg-darker p-0 link-white"
           to="/interesses"
           v-if="user"
         >
