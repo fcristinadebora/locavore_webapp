@@ -27,7 +27,7 @@ export default {
     return {
       center: [-27.232240,-52.022991],
       lastZoom: 15,
-      maxDistance: 5,
+      maxDistance: 0,
       myIcon: null,
       icon: {
         iconUrl: require("@/assets/img/marker.png"),
@@ -37,6 +37,7 @@ export default {
         shadowSize: [30, 35],
         shadowAnchor: [10, 20],
       },
+      loadedIds: [],
       markers: [],
       mapDiv: null
     };
@@ -68,14 +69,6 @@ export default {
     favorites() {
       const items = this.$store.getters["favorite/items"];
 
-      if(!items) {
-        this.$store.dispatch("favorite/fetchFromApi", { params: {
-          user_id: this.$root.user.id
-        }})
-      }
-
-      console.log('items', items)
-
       return items;
     },
     growers() {
@@ -87,17 +80,16 @@ export default {
 
   mounted() {
     this.myIcon = L.icon(this.icon);
-    
-    this.doSearch()
+    this.setCenter()
     this.setupLeafletMap()
   },
 
   methods: {
     doSearch() {
-      if (this.$root.searchForm.localType == "coord") {
-        this.center = [this.$root.searchForm.local.lat, this.$root.searchForm.local.long]
-      }
+      this.getItems()
+    },
 
+    getItems(){
       if(this.$route.params.type == 'produtos'){
         this.getProducts()
       }
@@ -105,17 +97,16 @@ export default {
       if(this.$route.params.type == 'produtores'){
         this.getGrowers()
       }
+
+      if(this.$route.params.type == 'favoritos'){
+        this.getFavorites()
+      }
     },
 
     getGrowers() {
       var params = {};
 
-      if (this.$root.searchForm.localType == "coord") {
-        params = {
-          lat: this.$root.searchForm.local.lat,
-          long: this.$root.searchForm.local.long,
-        };
-      } else if (this.$root.searchForm.localType == "city") {
+      if (this.$root.searchForm.localType == "city") {
         params = {
           city: this.$root.searchForm.local.city,
           state: this.$root.searchForm.local.state,
@@ -124,6 +115,10 @@ export default {
 
       params = {
         ...params,
+        lat: this.center[0],
+        long: this.center[1],
+        max_distance: this.maxDistance,
+        ignorable_ids: this.loadedIds,
         search_string: this.$root.searchForm.search,
         order_by: "distance",
       };
@@ -133,23 +128,21 @@ export default {
           params: params,
         })
         .then((response) => {
-          response.data.data.forEach(element => {
+          response.data.forEach(element => {
             this.addGrowerMarker(element)
+
+            if(!this.loadedIds.includes(element.id)){
+              this.loadedIds.push(element.id)
+            }
           });
         })
         .finally(() => {})
     },
 
     getProducts() {
-      this.activeTab = "products";
       var params = {};
 
-      if (this.$root.searchForm.localType == "coord") {
-        params = {
-          lat: this.$root.searchForm.local.lat,
-          long: this.$root.searchForm.local.long,
-        };
-      } else if (this.$root.searchForm.localType == "city") {
+      if (this.$root.searchForm.localType == "city") {
         params = {
           city: this.$root.searchForm.local.city,
           state: this.$root.searchForm.local.state,
@@ -158,17 +151,52 @@ export default {
 
       params = {
         ...params,
+        lat: this.center[0],
+        long: this.center[1],
+        max_distance: this.maxDistance,
+        ignorable_ids: this.loadedIds,
         search_string: this.$root.searchForm.search,
         order_by: "distance",
-      }
+      };
 
       this.$store
         .dispatch("product/get", {
           params: params,
         })
         .then((response) => {
-          response.data.data.forEach(element => {
+          response.data.forEach(element => {
             this.addProductMarker(element)
+
+            if(!this.loadedIds.includes(element.id)){
+              this.loadedIds.push(element.id)
+            }
+          });
+        })
+        .finally(() => {
+        })
+    },
+
+    getFavorites() {
+      const params = {
+        user_id: this.$root.user.id,
+        lat: this.center[0],
+        long: this.center[1],
+        max_distance: this.maxDistance,
+        ignorable_ids: this.loadedIds,
+        with_address: true
+      };
+
+      this.$store
+        .dispatch("favorite/fetchFromApi", {
+          params: params,
+        })
+        .then((response) => {
+          response.data.forEach(element => {
+            this.addFavoriteMarker(element.favorite_user)
+            
+            if(!this.loadedIds.includes(element.id)){
+              this.loadedIds.push(element.id)
+            }
           });
         })
         .finally(() => {
@@ -192,8 +220,9 @@ export default {
         .bindPopup('Você está aqui')
         .openPopup();
 
-      mapDiv.on('zoomend',this.handleZoomed)
-
+      mapDiv.on('zoomend',this.handleZoomEnd)
+      mapDiv.on('moveend',this.handleMoveEnd)
+      this.handleMoveEnd()
     },
 
     addProductMarker (product) {
@@ -215,6 +244,16 @@ export default {
 
       this.addMarker(content, grower.lat, grower.long)
     },
+
+    addFavoriteMarker (favorite) {
+      var content = `<strong>${favorite.name}</strong><br>`
+      content += `${favorite.addresses[0].street}, `
+      content += `${favorite.addresses[0].number ? favorite.addresses[0].number : 'Sem número'}, `
+      content += `${favorite.addresses[0].complement ? `${favorite.addresses[0].complement}, ` : '' } `
+      content += `${favorite.addresses[0].district}`
+
+      this.addMarker(content, favorite.addresses[0].lat, favorite.addresses[0].long)
+    },
   
 
     addMarker(content, lat, long){
@@ -223,9 +262,47 @@ export default {
         .bindPopup(content);
     },
 
-    handleZoomed (e) {
-      console.log(e)
-      console.log(this.mapDiv.getZoom())
+    handleZoomEnd () {
+      this.setMaxDistance()
+      this.doSearch()
+    },
+
+    handleMoveEnd(){
+      this.setMaxDistance()
+      this.updateCenter()
+      this.doSearch()
+    },
+
+    setMaxDistance() {
+      const bounds = this.mapDiv.getBounds()
+
+      const northWest = bounds.getNorthWest()
+      const northEast = bounds.getNorthEast()
+      const horizontalDistance = northWest.distanceTo(northEast) / 2 /1000;
+
+      const southWest = bounds.getSouthWest()
+      const verticalDistance = northWest.distanceTo(southWest) / 2 /1000;
+
+      if(horizontalDistance > verticalDistance){
+        this.maxDistance = horizontalDistance
+      } else {
+        this.maxDistance = verticalDistance
+      }
+    },
+
+    updateCenter () {
+      const center  = this.mapDiv.getCenter()
+
+      this.center = [center.lat, center.lng]
+    },
+
+    setCenter () {
+      if (this.$root.searchForm.localType == "coord") {
+        this.center = [this.$root.searchForm.local.lat, this.$root.searchForm.local.long]
+      }
+      if (this.$root.searchForm.localType == "address") {
+        this.center = [this.$root.searchForm.local.lat, this.$root.searchForm.local.long]
+      }
     }
 
   },
