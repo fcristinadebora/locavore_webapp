@@ -172,7 +172,6 @@ export default {
           this.form.district = response.data.bairro
           this.form.state = this.estados.find(item => item.sigla == response.data.uf)
           this.form.city = this.cidades.find(item => item.nome == response.data.localidade)
-          console.log(response)
         })
         .finally(() => {
           this.loading = false

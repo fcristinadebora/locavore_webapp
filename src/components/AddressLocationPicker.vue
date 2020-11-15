@@ -61,8 +61,6 @@ export default {
         (position) => {
           this.$root.geolocation = position.coords;
 
-          console.log(this.$root.geolocation)
-
           this.center = [this.$root.geolocation.latitude, this.$root.geolocation.longitude]
 
           this.setupLeafletMap()
