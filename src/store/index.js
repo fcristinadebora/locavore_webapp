@@ -12,6 +12,7 @@ import favorite from './modules/favorite'
 import interest from './modules/interest'
 import address from './modules/address'
 import contact from './modules/contact'
+import feedback from './modules/feedback'
 
 Vue.use(Vuex)
 
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     favorite,
     interest,
     address,
-    contact
+    contact,
+    feedback
   },
   strict: debug
 })

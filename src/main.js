@@ -71,6 +71,7 @@ new Vue({
   methods: {
     logout() {
       localStorage.removeItem("authToken")
+      this.$store.dispatch("user/authenticated")
       router.push('/login')
     }
   }

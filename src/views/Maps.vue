@@ -2,7 +2,7 @@
   <page>
     <span slot="content">
       <h1 class="h4 w-100 text-left my-3">
-        Resultados da busca - Mapa de {{ $route.type == 'produtos' ? 'produtos' : 'produtores' }}
+        Mapa de {{ mapType }}
         <router-link to="/enderecos" class="btn btn-info btn-sm mr-2 float-right">
           <i class="fa fa-arrow-circle-left"></i> Voltar
         </router-link>
@@ -43,6 +43,22 @@ export default {
   },
 
   computed: {
+    mapType(){
+      if(this.$route.params.type == 'produtos'){
+        return 'produtos'
+      }
+
+      if(this.$route.params.type == 'produtores'){
+        return 'produtores'
+      }
+
+      if(this.$route.params.type == 'favoritos'){
+        return 'produtores favoritos'
+      }
+
+      return ''
+    },
+
     products() {
       const items = this.$store.getters["product/items"];
 

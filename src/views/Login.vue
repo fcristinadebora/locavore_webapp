@@ -1,9 +1,9 @@
 <template>
   <div>
-    <header-navbar class="header-absolute"></header-navbar>
+    <header-navbar class="header-relative"></header-navbar>
     <div class="w-100 full-height bg-vegetables"></div>
 
-    <div class="container full-height">
+    <div class="container full-height pt-4 pb-4">
       <div class="row justify-content-center full-height align-items-center">
         <div class="col-12 col-md-6 col-lg-5 text-center">
           <h4 class="mb-4">Bem-vindo(a) ao Locavore!</h4>
@@ -134,8 +134,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header-absolute{
-  position: absolute;
+.header-relative{
+  position: relative;
   width: 100%;
   z-index: 9;
 }

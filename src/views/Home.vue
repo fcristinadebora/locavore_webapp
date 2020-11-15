@@ -465,7 +465,6 @@ export default {
     },
 
     getInterests() {
-      console.log('interestssss')
       this.$store
       .dispatch("interest/get", {
         params: {
@@ -473,7 +472,6 @@ export default {
         },
       })
       .then((response) => {
-        console.log('interests', response)
         if (response.data) {
           this.totalInterests = response.data.total;
         }

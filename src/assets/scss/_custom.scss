@@ -1,5 +1,5 @@
 .full-height{
-    min-height: 100vh;
+    height: 100%;
 }
 
 html, body {
@@ -17,7 +17,7 @@ body{
 }
 
 .bg-vegetables {
-    position: absolute;
+    position: fixed;
     background: url("~@/assets/img/veggies.jpg");
     background-size: 8%;
     opacity: 0.2;
