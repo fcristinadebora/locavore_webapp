@@ -55,6 +55,10 @@
             </div>
           </div>
         </div>
+
+        <div class="col-12">
+          <b-pagination v-model="currentPage" :per-page="15" @change="changePage" align="center" pills :total-rows="total"></b-pagination>
+        </div>
       </span>
     </span>
   </page>
@@ -70,6 +74,7 @@ export default {
   data() {
     return {
       currentPage: 1,
+      total: 0,
       products: null,
     };
   },
@@ -79,6 +84,12 @@ export default {
   },
 
   methods: {
+    changePage(newPage){
+      this.currentPage = newPage
+
+      this.getProducts()
+    },
+
     getProducts() {
       this.$store
         .dispatch("product/get", {
@@ -90,10 +101,12 @@ export default {
         })
         .then((response) => {
             if(response.data.data.length == 0){
-                this.products = []
+              this.products = []
             }else{
-                this.products = response.data
+              this.products = response.data
             }
+
+            this.total = response.data.total
         })
         .catch((error) => {
           this.products = [];

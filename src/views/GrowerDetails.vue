@@ -141,7 +141,83 @@
             </div>
             <rating type="Produtor" :card="false" :relation-key="{user_id: grower.id}"></rating>
             </b-tab>
-            <b-tab title="Produtos"> </b-tab>
+            <b-tab title="Produtos">
+              <div class="w-100 text-center py-3" v-if="products.data == null">
+                  <i class="fa fa-pulse fa-spinner"></i> Carregando
+                </div>
+                <div class="w-100 text-center py-3" v-if="products.data && products.data.data && !products.data.data.length">
+                  Nenhum item localizado
+                </div>
+                <div class="row" v-if="products.data && products.data.data">
+                  <div
+                    class="col-12 col-lg-12 col-xl-6 py-3"
+                    v-for="(product, index) in products.data.data"
+                    :key="index"
+                  >
+                    <div class="card result-item">
+                      <div class="card-body">
+                        <div class="col-12">
+                          <div class="row d-flex flex-row">
+                            <div
+                              class="item-image product-item-image d-flex align-items-center rounded justify-content-center"
+                              :style="
+                                product.images.length
+                                  ? 'background: url(' +
+                                    apiUrl +
+                                    product.images[0].image.file_path +
+                                    product.images[0].image.file_name +
+                                    ')'
+                                  : null
+                              "
+                            >
+                              <i
+                                class="fa fa-image"
+                                v-if="!product.images.length"
+                              ></i>
+                            </div>
+                            <div class="item-text ml-sm-3 d-flex flex-column justify-content-between" style="flex:1">
+                              <div class="w-100">
+                                <div class="w-100">
+                                  <span
+                                      class="badge bg-gradient mb-1 w-100 w-sm-auto"
+                                      >{{
+                                        product.product_category.description
+                                      }}</span>                                
+                                </div>
+                                <div class="w-100 d-block d-sm-flex mt-3 my-sm-0 justify-content-between">
+                                  <div class="font-weight-bold text-center text-sm-left">
+                                    {{ product.name }}
+                                  </div>
+                                  <div
+                                    class="text-color2 text-center w-100 w-sm-auto"
+                                  >
+                                    {{ product.price | toReais }}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="w-100">
+                                <div class="w-100 text-center text-sm-left">
+                                  <span
+                                    class="badge mr-2 bg-color2"
+                                    v-for="{ tag, index } in product.tags"
+                                    :key="index"
+                                    >#{{ tag.description }}</span
+                                  >
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="w-100 pt-2">
+                              <router-link :to="`/produto/${product.id}`" class="btn btn-block border-info text-center">Ver detalhes</router-link>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </b-tab>
           </b-tabs>
         </b-card>
 
@@ -165,6 +241,11 @@ export default {
       grower: null,
       images: [],
       apiUrl: getApiUrl(),
+      products: {
+        page: 1,
+        total: 0,
+        data: null
+      }
     };
   },
 
@@ -173,6 +254,36 @@ export default {
   },
 
   methods: {
+    changePage(newPage){
+      this.products.page = newPage
+
+      this.getProducts()
+    },
+
+    getProducts() {
+      this.$store
+        .dispatch("product/get", {
+          params: {
+            page: this.products.page,
+            user_id: this.$route.params.id,
+            unique: true
+          }
+        })
+        .then((response) => {
+            if(response.data.data.length == 0){
+              this.products.data = []
+            }else{
+              this.products.data = response.data
+            }
+
+            this.products.total = response.data.total
+        })
+        .catch((error) => {
+          this.products.data = [];
+          console.error("Falha ao obter produtos", error);
+        })
+    },
+
     getGrowerData() {
       this.$store
         .dispatch("grower/getById", {
@@ -199,6 +310,8 @@ export default {
               id: image.id,
             };
           });
+
+          this.getProducts()
         })
         .catch((error) => {
           var message = "Falha ao carregar dados do produtor!";
@@ -242,6 +355,41 @@ export default {
   @media (min-width: 992px) {
     height: 180px;
     width: 180px;
+  }
+  
+}
+
+.product-item-image{
+  background-color: #ccc;
+  display: block;
+  height: 200px;
+  width: 100%;
+  background-size: cover !important;
+  background-color: #ccc !important;
+  background-position: center !important;
+
+  // Small devices (landscape phones, 576px and up)
+  @media (min-width: 576px) {
+    height: 90px;
+    width: 90px;
+  }
+
+  // Medium devices (tablets, 768px and up)
+  @media (min-width: 768px) {
+    height: 100px;
+    width: 100px;
+  }
+
+  // Large devices (desktops, 992px and up)
+  @media (min-width: 992px) {
+    height: 100px;
+    width: 100px;
+  }
+
+  // Extra large devices (large desktops, 1200px and up)
+  @media (min-width: 1200px) {
+    height: 100px;
+    width: 100px;
   }
 }
 </style>
