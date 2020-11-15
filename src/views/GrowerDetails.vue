@@ -139,7 +139,7 @@
                 </div>
               </div>
             </div>
-            <rating type="Produtor" :card="false"></rating>
+            <rating type="Produtor" :card="false" :relation-key="{user_id: grower.id}"></rating>
             </b-tab>
             <b-tab title="Produtos"> </b-tab>
           </b-tabs>

@@ -13,6 +13,7 @@ import interest from './modules/interest'
 import address from './modules/address'
 import contact from './modules/contact'
 import feedback from './modules/feedback'
+import rating from './modules/rating'
 
 Vue.use(Vuex)
 
@@ -31,7 +32,8 @@ export default new Vuex.Store({
     interest,
     address,
     contact,
-    feedback
+    feedback,
+    rating
   },
   strict: debug
 })

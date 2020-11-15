@@ -9,6 +9,7 @@ import VueSweetalert2 from 'vue-sweetalert2'
 import wysiwyg from "vue-wysiwyg"
 import Multiselect from 'vue-multiselect'
 import VueMask from 'v-mask'
+import moment from 'moment'
  
 import 'sweetalert2/dist/sweetalert2.min.css'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -35,6 +36,14 @@ Vue.component('multiselect', Multiselect)
 Vue.filter('toReais', function (value) {
     if (!value) return ''
     return value.toLocaleString('pt-BR', { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL' })
+})
+
+Vue.filter('formatDate', function (value, format) {
+  if (value && moment(String(value)).isValid()) {
+    return moment(String(value)).format(format)
+  }
+
+  return value
 })
 
 Vue.filter('toKm', function (value) {

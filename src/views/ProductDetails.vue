@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <rating type="Produto" :card="true"></rating>
+      <rating type="Produto" :card="true" :relation-key="{product_id: productId}"></rating>
     </span>
   </page>
 </template>
@@ -70,7 +70,8 @@ export default {
   data () {
     return {
       product: null,
-      images: []
+      images: [],
+      productId: this.$route.params.id
     }
   }, 
 
@@ -80,7 +81,7 @@ export default {
 
   methods: {
     getProductData(){
-      this.$store.dispatch('product/getById', { id:this.$route.params.id, params: { with_tags: true, with_category: true, with_images: true, with_grower: true } })
+      this.$store.dispatch('product/getById', { id:this.productId, params: { with_tags: true, with_category: true, with_images: true, with_grower: true } })
       .then((response) => {
         this.product = response.data.product
 
