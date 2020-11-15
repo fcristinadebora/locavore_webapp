@@ -264,8 +264,6 @@ export default {
         }
       })
       .then(response => {
-        console.log(response)
-
         if(response.data.grower.identification_tags.length){
           this.profile = {
             ...this.profile,
